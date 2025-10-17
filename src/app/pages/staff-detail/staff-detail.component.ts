@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe, NgFor, NgIf, KeyValuePipe, NgClass } from '@angular/common';
 import { DataService } from '../../services/data.service';
 import { map, switchMap } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 
 type HorarioItem = { dia: string; tramo: string; ramo?: string; sala?: string; };
 type Vm = {
@@ -16,13 +18,18 @@ type Vm = {
 @Component({
   standalone: true,
   selector: 'app-staff-detail',
-  imports: [AsyncPipe, NgFor, NgIf, KeyValuePipe, NgClass],
+  imports: [AsyncPipe, NgFor, NgIf, KeyValuePipe, NgClass, RouterLink],
   templateUrl: './staff-detail.component.html',
   styleUrls: ['./staff-detail.component.css']
 })
 export class StaffDetailComponent {
   private route = inject(ActivatedRoute);
   private data = inject(DataService);
+  private location = inject(Location);
+  goBack() {
+    this.location.back();
+  }
+
 
   viewMode = signal<'day' | 'week'>('day');
   selectedDay = signal<number>(this.today());

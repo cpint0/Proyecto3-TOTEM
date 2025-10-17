@@ -1,9 +1,10 @@
 <div class="container py-4" *ngIf="vm$ | async as p">
-  <div class="mb-3">
-    <a class="btn btn-outline-primary" routerLink="/">Inicio</a>
-  </div>
-
   <div class="card shadow-sm border-0 p-3 p-md-4">
+    <!-- Barra superior dentro de la card -->
+    <div class="d-flex mb-3">
+      <a class="btn btn-outline-primary" [routerLink]="['/']">Inicio</a>
+    </div>
+
     <!-- Header -->
     <div class="d-flex gap-3 align-items-center">
       <img
@@ -50,6 +51,7 @@
 
       <!-- Selector de día solo en modo 'Por día' -->
       <div *ngIf="viewMode() === 'day'" class="mt-2">
+        <label for="daySelect" class="form-label mb-1 small text-muted">Selecciona un día</label>
         <select
           id="daySelect"
           class="form-select form-select-sm d-inline-block w-auto select-compact"
@@ -122,6 +124,12 @@
     <div class="mt-4" *ngIf="p.mapaUrl">
       <h2 class="h5">Mapa / Oficina</h2>
       <img [src]="p.mapaUrl" class="w-100 rounded-3 border" alt="Mapa" />
+    </div>
+
+    <!-- ===== Botón Volver al final de la card ===== -->
+    <hr class="my-4" />
+    <div class="d-flex">
+      <button type="button" class="btn btn-outline-secondary ms-auto" (click)="goBack()">← Volver</button>
     </div>
   </div>
 </div>
