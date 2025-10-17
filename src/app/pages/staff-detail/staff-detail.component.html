@@ -5,7 +5,9 @@
 
   <div class="card shadow-sm border-0 p-3 p-md-4">
     <div class="d-flex gap-3 align-items-center">
-      <img [src]="p.fotoUrl || 'assets/img/placeholder.png'" style="width:120px;height:120px;object-fit:contain" class="rounded-3 border bg-white" alt="">
+      <img [src]="p.fotoUrl || 'assets/img/placeholder.png'"
+           style="width:120px;height:120px;object-fit:cover"
+           class="rounded-3 border bg-white" alt="">
       <div>
         <h1 class="h3 mb-2">{{ p.nombre }}</h1>
         <div class="d-flex flex-wrap gap-2">
@@ -18,15 +20,81 @@
 
     <hr class="my-4">
 
-    <h2 class="h5">Horario</h2>
-    <div *ngIf="p.horario?.length; else nohor" class="d-flex flex-wrap gap-2">
-      <span class="badge text-bg-light border" *ngFor="let h of p.horario">
-        {{h.dia}} · {{h.tramo}} <ng-container *ngIf="h.ramo">· {{h.ramo}}</ng-container>
-        <ng-container *ngIf="h.sala">· {{h.sala}}</ng-container>
-      </span>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <h2 class="h5 mb-0">Horario</h2>
+      <div class="btn-group" role="group" aria-label="Modo de vista">
+        <button class="btn btn-sm" [class.btn-primary]="viewMode() === 'day'"
+                [class.btn-outline-primary]="viewMode() !== 'day'"
+                (click)="viewMode.set('day')">Por día</button>
+        <button class="btn btn-sm" [class.btn-primary]="viewMode() === 'week'"
+                [class.btn-outline-primary]="viewMode() !== 'week'"
+                (click)="viewMode.set('week')">Semanal</button>
+      </div>
     </div>
-    <ng-template #nohor><div class="text-muted">Sin horario publicado.</div></ng-template>
 
+    <!-- ====== POR DÍA ====== -->
+    <ng-container *ngIf="viewMode() === 'day'">
+      <ul class="nav nav-pills mt-3 mb-3 gap-2">
+        <li class="nav-item" *ngFor="let d of p.days">
+          <button class="nav-link"
+                  [class.active]="selectedDay() === d.idx"
+                  (click)="selectedDay.set(d.idx)">
+            {{ d.label }}
+          </button>
+        </li>
+      </ul>
+
+      <div *ngIf="p.grouped[selectedDay()]?.length; else noDia" class="d-flex flex-column gap-2">
+        <div class="slot card border-0 shadow-sm p-2"
+             *ngFor="let h of p.grouped[selectedDay()]">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge"
+                    [ngClass]="{'text-bg-primary': isNow(h.tramo, selectedDay()), 'text-bg-light': !isNow(h.tramo, selectedDay())}">
+                {{ h.tramo }}
+              </span>
+              <strong class="ms-2" *ngIf="h.ramo">{{ h.ramo }}</strong>
+              <span class="text-muted ms-2" *ngIf="h.sala">• {{ h.sala }}</span>
+            </div>
+            <span *ngIf="isNow(h.tramo, selectedDay())" class="badge text-bg-success">En curso</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noDia>
+        <div class="text-muted mt-2">Sin bloques para {{ dayLabel(p, selectedDay()) }}.</div>
+      </ng-template>
+    </ng-container>
+
+    <!-- ====== SEMANAL ====== -->
+    <ng-container *ngIf="viewMode() === 'week'">
+      <div class="table-responsive mt-3">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th style="width:140px">Horas</th>
+              <th *ngFor="let d of p.days">{{ d.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of p.timeRows">
+              <th class="fw-normal">{{ row }}</th>
+              <td *ngFor="let d of p.days">
+                <ng-container *ngIf="p.grouped[d.idx] as slots">
+                  <div *ngFor="let h of slots" [hidden]="h.tramo !== row">
+                    <div class="fw-semibold">{{ h.ramo || '—' }}</div>
+                    <div class="text-muted small" *ngIf="h.sala">{{ h.sala }}</div>
+                    <span class="badge text-bg-success mt-1" *ngIf="isNow(row, d.idx)">En curso</span>
+                  </div>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!p.timeRows.length" class="text-muted">Sin horario publicado.</div>
+    </ng-container>
+
+    <!-- Mapa -->
     <div class="mt-4" *ngIf="p.mapaUrl">
       <h2 class="h5">Mapa / Oficina</h2>
       <img [src]="p.mapaUrl" class="w-100 rounded-3 border" alt="Mapa">
