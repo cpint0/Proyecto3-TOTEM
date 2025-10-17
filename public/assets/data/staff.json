@@ -1,12 +1,25 @@
 [
   {
-    "id": "maria-gonzales",
-    "nombre": "Maria Gonzales",
+    "id": "maria-navarrete",
+    "nombre": "Maria Navarrete",
     "rol": "admin",
-    "correo": "maria.gonzales@uta.cl",
+    "correo": "maria.navarrete@uta.cl",
     "anexo": "1234",
     "ubicacion": "Edificio Antiguo · Of. 3-11",
-    "fotoUrl": "assets/img/administrativos.png",
+    "fotoUrl": "assets/img/marianavarrete.jpg",
+    "horario": [
+      { "dia": "LUNES", "tramo": "08:00 - 09:30", "ramo": "DISEÑO MECÁNICO", "sala": "S3-11" }
+    ],
+    "mapaUrl": "assets/img/plano-oficina.png"
+  },
+  {
+    "id": "monica-antezana",
+    "nombre": "Monica Antezana",
+    "rol": "admin",
+    "correo": "monica.antezana@uta.cl",
+    "anexo": "1234",
+    "ubicacion": "Edificio Antiguo · Of. 3-11",
+    "fotoUrl": "assets/img/monicaantezana.jpg",
     "horario": [
       { "dia": "LUNES", "tramo": "08:00 - 09:30", "ramo": "DISEÑO MECÁNICO", "sala": "S3-11" }
     ],
