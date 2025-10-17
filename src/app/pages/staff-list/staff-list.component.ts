@@ -23,4 +23,5 @@ export class StaffListComponent {
   vm$ = combineLatest([of(null), this.base$]).pipe(map(([_, list]) =>
     list.filter(s => (this.q ? (s.nombre + ' ' + (s.ubicacion||'')).toLowerCase().includes(this.q.toLowerCase()) : true))
   ));
+  
 }
