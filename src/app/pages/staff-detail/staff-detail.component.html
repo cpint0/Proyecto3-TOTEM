@@ -1,0 +1,35 @@
+<div class="container py-4" *ngIf="vm$ | async as p">
+  <div class="mb-3">
+    <a class="btn btn-outline-primary" routerLink="/">Inicio</a>
+  </div>
+
+  <div class="card shadow-sm border-0 p-3 p-md-4">
+    <div class="d-flex gap-3 align-items-center">
+      <img [src]="p.fotoUrl || 'assets/img/placeholder.png'" style="width:120px;height:120px;object-fit:contain" class="rounded-3 border bg-white" alt="">
+      <div>
+        <h1 class="h3 mb-2">{{ p.nombre }}</h1>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge text-bg-secondary" *ngIf="p.anexo">Anexo: {{ p.anexo }}</span>
+          <span class="badge text-bg-secondary" *ngIf="p.correo">{{ p.correo }}</span>
+          <span class="badge text-bg-secondary" *ngIf="p.ubicacion">{{ p.ubicacion }}</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h2 class="h5">Horario</h2>
+    <div *ngIf="p.horario?.length; else nohor" class="d-flex flex-wrap gap-2">
+      <span class="badge text-bg-light border" *ngFor="let h of p.horario">
+        {{h.dia}} · {{h.tramo}} <ng-container *ngIf="h.ramo">· {{h.ramo}}</ng-container>
+        <ng-container *ngIf="h.sala">· {{h.sala}}</ng-container>
+      </span>
+    </div>
+    <ng-template #nohor><div class="text-muted">Sin horario publicado.</div></ng-template>
+
+    <div class="mt-4" *ngIf="p.mapaUrl">
+      <h2 class="h5">Mapa / Oficina</h2>
+      <img [src]="p.mapaUrl" class="w-100 rounded-3 border" alt="Mapa">
+    </div>
+  </div>
+</div>

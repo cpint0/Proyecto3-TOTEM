@@ -1,0 +1,32 @@
+[
+  {
+    "id": "maria-gonzales",
+    "nombre": "Maria Gonzales",
+    "rol": "admin",
+    "correo": "maria.gonzales@uta.cl",
+    "anexo": "1234",
+    "ubicacion": "Edificio Antiguo · Of. 3-11",
+    "fotoUrl": "assets/img/administrativos.png",
+    "horario": [
+      { "dia": "LUNES", "tramo": "08:00 - 09:30", "ramo": "DISEÑO MECÁNICO", "sala": "S3-11" }
+    ],
+    "mapaUrl": "assets/img/plano-oficina.png"
+  },
+  {
+    "id": "juan-perez",
+    "nombre": "Juan Perez",
+    "rol": "academicos",
+    "correo": "juan.perez@uta.cl",
+    "anexo": "5678",
+    "ubicacion": "Edificio Nuevo · Of. 2-07",
+    "fotoUrl": "assets/img/academicos.png"
+  },
+  {
+    "id": "sofia-ramirez",
+    "nombre": "Sofía Ramírez",
+    "rol": "laboratorio",
+    "correo": "sofia.ramirez@uta.cl",
+    "ubicacion": "Laboratorio Materiales",
+    "fotoUrl": "assets/img/laboratorio.png"
+  }
+]
