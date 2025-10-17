@@ -104,5 +104,12 @@ export class StaffDetailComponent {
   dayLabel(vm: Vm, idx: number): string {
   const d = vm.days.find(x => x.idx === idx);
   return d ? d.label : '';
-}
+  }
+
+  onDayChange(ev: Event) {
+  const value = Number((ev.target as HTMLSelectElement).value);
+  this.selectedDay.set(value);
+  }
+
+
 }
