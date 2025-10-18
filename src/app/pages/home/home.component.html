@@ -1,66 +1,34 @@
-<div class="container py-4 py-md-5">
+<div class="flex flex-col min-h-screen">
+  <app-navbar></app-navbar>
 
-  <!-- “Pantalla de inicio” banda superior -->
-  <div class="text-center mb-4">
-    <span class="badge rounded-pill text-bg-light px-4 py-2 shadow-sm">
-      Pantalla de Inicio
-    </span>
-  </div>
+  <!-- CLASES DE CORRECCIÓN APLICADAS:
+       1. pt-24: Asegura que el contenido comience debajo de la navbar (h-20/5rem).
+       2. flex-grow, overflow-y-auto, h-0: Solucionan el scroll global de la ventana.
+  -->
+  <main class="px-4 pt-24 flex-grow overflow-y-auto h-0">
+    <div class="max-w-7xl mx-auto pt-0 pb-1">
+      <!-- Contenedor para los títulos con fondo semi-transparente -->
+      <div class="bg-[#F8F8F8]/90 p-8 rounded-lg shadow-2xl mb-8">
+        <h1 class="text-5xl font-extrabold text-[#0F3F7A] mb-6 text-center">
+          Bienvenidos al Departamento de Mecánica
+        </h1>
+        <h2 class="text-4xl font-medium text-[#0F3F7A] mb-1 text-center">
+          Informate sobre
+        </h2>
+      </div>
 
-  <!-- Tarjeta contenedora -->
-  <div class="card shadow-sm border-0 p-3 p-md-4 rounded-4">
-    <div class="text-center">
-      <h1 class="fw-bold display-6 display-md-4 mb-4 title-depto">
-        DEPARTAMENTO DE INGENIERÍA MECÁNICA
-      </h1>
+      <!-- Tarjetas de Solución -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <app-card
+          *ngFor="let solution of solutions; index as i"
+          [title]="solution.title"
+          [description]="solution.description"
+          [linkUrl]="solution.linkUrl"
+          [cardIndex]="i"
+          [imageUrl]="solution.imageUrl"
+        ></app-card>
+      </div>
     </div>
-
-    <!-- GRID de opciones -->
-    <div class="row g-4 justify-content-center">
-
-      <!-- Tile -->
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/categoria/academicos" aria-label="Académicos">
-          <img src="assets/img/academicos.png" alt="" />
-          <span>Académicos</span>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/categoria/admin" aria-label="Funcionarios administrativos">
-          <img src="assets/img/administrativos.png" alt="" />
-          <span>Funcionarios administrativos</span>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/categoria/laboratorio" aria-label="Asistentes de laboratorio">
-          <img src="assets/img/laboratorio.png" alt="" />
-          <span>Asistente de laboratorio</span>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/categoria/aseo" aria-label="Auxiliares y Aseo">
-          <img src="assets/img/aseo.png" alt="" />
-          <span>Auxiliares y Aseo</span>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/categoria/centro" aria-label="Centro de estudiantes">
-          <img src="assets/img/centro.png" alt="" />
-          <span>Centro de estudiantes</span>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-4">
-        <a class="tile-card" routerLink="/salas" aria-label="Salas">
-          <img src="assets/img/salas.png" alt="" />
-          <span>Salas</span>
-        </a>
-      </div>
-
-    </div>
-  </div>
+  </main>
+  <app-footer></app-footer>
 </div>
