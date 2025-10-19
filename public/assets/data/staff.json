@@ -2,7 +2,7 @@
   {
     "id": "maria-navarrete",
     "nombre": "Maria Navarrete",
-    "rol": "admin",
+    "rol": "academicos",
     "correo": "maria.navarrete@uta.cl",
     "anexo": "1234",
     "ubicacion": "Edificio Antiguo · Of. 3-11",
@@ -15,7 +15,7 @@
   {
     "id": "monica-antezana",
     "nombre": "Monica Antezana",
-    "rol": "admin",
+    "rol": "academicos",
     "correo": "monica.antezana@uta.cl",
     "anexo": "1234",
     "ubicacion": "Edificio Antiguo · Of. 3-11",

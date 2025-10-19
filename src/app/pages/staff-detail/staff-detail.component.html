@@ -1,59 +1,79 @@
-<div class="container py-4" *ngIf="vm$ | async as p">
-  <div class="card shadow-sm border-0 p-3 p-md-4">
-    <!-- Barra superior dentro de la card -->
-    <div class="d-flex mb-3">
-      <a class="btn btn-outline-primary" [routerLink]="['/']">Inicio</a>
+<div class="max-w-7xl mx-auto px-4 py-4" *ngIf="vm$ | async as p">
+  <div class="bg-white rounded-xl shadow p-4 md:p-6">
+    <!-- Barra superior -->
+    <div class="mb-3">
+      <a
+        class="inline-flex items-center rounded-md border px-3 py-2 text-[#0F3F7A] hover:bg-gray-50"
+        [routerLink]="['/']"
+      >
+        Inicio
+      </a>
     </div>
 
     <!-- Header -->
-    <div class="d-flex gap-3 align-items-center">
+    <div class="flex items-center gap-4">
       <img
         [src]="p.fotoUrl || 'assets/img/placeholder.png'"
-        style="width:120px;height:120px;object-fit:cover"
-        class="rounded-3 border bg-white"
+        class="w-[120px] h-[120px] object-cover rounded-lg border bg-white"
         alt=""
       />
       <div>
-        <h1 class="h3 mb-2">{{ p.nombre }}</h1>
-        <div class="d-flex flex-wrap gap-2">
-          <span class="badge text-bg-secondary" *ngIf="p.anexo">Anexo: {{ p.anexo }}</span>
-          <span class="badge text-bg-secondary" *ngIf="p.correo">{{ p.correo }}</span>
-          <span class="badge text-bg-secondary" *ngIf="p.ubicacion">{{ p.ubicacion }}</span>
+        <h1 class="text-2xl font-semibold mb-2">{{ p.nombre }}</h1>
+        <div class="flex flex-wrap gap-2">
+          <span
+            class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700"
+            *ngIf="p.anexo"
+            >Anexo: {{ p.anexo }}</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700"
+            *ngIf="p.correo"
+            >{{ p.correo }}</span
+          >
+          <span
+            class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700"
+            *ngIf="p.ubicacion"
+            >{{ p.ubicacion }}</span
+          >
         </div>
       </div>
     </div>
 
-    <hr class="my-4" />
+    <hr class="my-4 border-gray-200" />
 
     <!-- ===== Horario ===== -->
-    <h2 class="h5">Horario</h2>
+    <h2 class="text-lg font-semibold text-[#0F3F7A]">Horario</h2>
 
-    <!-- Controles bajo el título (izquierda) -->
+    <!-- Controles -->
     <div class="mt-2">
-      <div class="btn-group" role="group" aria-label="Modo de vista">
+      <div class="inline-flex gap-2">
         <button
-          class="btn btn-sm"
-          [class.btn-primary]="viewMode() === 'day'"
-          [class.btn-outline-primary]="viewMode() !== 'day'"
+          class="rounded-md px-3 py-1.5 text-sm"
+          [ngClass]="{
+            'bg-[#0F3F7A] text-white': viewMode() === 'day',
+            'border text-[#0F3F7A] hover:bg-gray-50': viewMode() !== 'day'
+          }"
           (click)="viewMode.set('day')"
         >
           Por día
         </button>
         <button
-          class="btn btn-sm"
-          [class.btn-primary]="viewMode() === 'week'"
-          [class.btn-outline-primary]="viewMode() !== 'week'"
+          class="rounded-md px-3 py-1.5 text-sm"
+          [ngClass]="{
+            'bg-[#0F3F7A] text-white': viewMode() === 'week',
+            'border text-[#0F3F7A] hover:bg-gray-50': viewMode() !== 'week'
+          }"
           (click)="viewMode.set('week')"
         >
           Semanal
         </button>
       </div>
 
-      <!-- Selector de día solo en modo 'Por día' -->
+      <!-- Selector de día -->
       <div *ngIf="viewMode() === 'day'" class="mt-2">
         <select
           id="daySelect"
-          class="form-select form-select-sm d-inline-block w-auto select-compact"
+          class="border rounded-md px-3 py-1.5 text-sm inline-block"
           [value]="selectedDay()"
           (change)="onDayChange($event)"
         >
@@ -62,53 +82,65 @@
       </div>
     </div>
 
-    <!-- ====== VISTA POR DÍA ====== -->
+    <!-- ===== Vista por día ===== -->
     <ng-container *ngIf="viewMode() === 'day'">
-      <div
-        *ngIf="p.grouped[selectedDay()]?.length; else noDia"
-        class="d-flex flex-column gap-2 mt-3"
-      >
-        <div class="slot card border-0 shadow-sm p-2" *ngFor="let h of p.grouped[selectedDay()]">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
+      <div *ngIf="p.grouped[selectedDay()]?.length; else noDia" class="flex flex-col gap-2 mt-3">
+        <div
+          class="slot bg-white border rounded-lg shadow-sm p-3"
+          *ngFor="let h of p.grouped[selectedDay()]"
+        >
+          <div class="flex items-center justify-between">
+            <div class="text-sm">
               <span
-                class="badge"
-                [class.text-bg-primary]="isNow(h.tramo, selectedDay())"
-                [class.text-bg-light]="!isNow(h.tramo, selectedDay())"
+                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+                [ngClass]="{
+                  'bg-blue-100 text-blue-700': isNow(h.tramo, selectedDay()),
+                  'bg-gray-100 text-gray-700': !isNow(h.tramo, selectedDay())
+                }"
               >
                 {{ h.tramo }}
               </span>
-              <strong class="ms-2" *ngIf="h.ramo">{{ h.ramo }}</strong>
-              <span class="text-muted ms-2" *ngIf="h.sala">• {{ h.sala }}</span>
+              <strong class="ml-2" *ngIf="h.ramo">{{ h.ramo }}</strong>
+              <span class="text-gray-500 ml-2" *ngIf="h.sala">• {{ h.sala }}</span>
             </div>
-            <span *ngIf="isNow(h.tramo, selectedDay())" class="badge text-bg-success">En curso</span>
+            <span
+              *ngIf="isNow(h.tramo, selectedDay())"
+              class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700"
+              >En curso</span
+            >
           </div>
         </div>
       </div>
       <ng-template #noDia>
-        <div class="text-muted mt-2">Sin bloques para {{ dayLabel(p, selectedDay()) }}.</div>
+        <div class="text-gray-500 mt-2">
+          Sin bloques para {{ dayLabel(p, selectedDay()) }}.
+        </div>
       </ng-template>
     </ng-container>
 
-    <!-- ====== VISTA SEMANAL ====== -->
+    <!-- ===== Vista semanal ===== -->
     <ng-container *ngIf="viewMode() === 'week'">
-      <div class="table-responsive mt-3">
-        <table class="table table-sm align-middle">
+      <div class="overflow-x-auto mt-3">
+        <table class="min-w-full text-sm">
           <thead>
-            <tr>
-              <th style="width:140px">Horas</th>
-              <th *ngFor="let d of p.days">{{ d.label }}</th>
+            <tr class="border-b">
+              <th class="text-left py-2 px-3 w-[140px]">Horas</th>
+              <th class="text-left py-2 px-3" *ngFor="let d of p.days">{{ d.label }}</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of p.timeRows">
-              <th class="fw-normal">{{ row }}</th>
-              <td *ngFor="let d of p.days">
+              <th class="font-normal py-2 px-3">{{ row }}</th>
+              <td class="py-2 px-3 align-top" *ngFor="let d of p.days">
                 <ng-container *ngIf="p.grouped[d.idx] as slots">
-                  <div *ngFor="let h of slots" [hidden]="h.tramo !== row">
-                    <div class="fw-semibold">{{ h.ramo || '—' }}</div>
-                    <div class="text-muted small" *ngIf="h.sala">{{ h.sala }}</div>
-                    <span class="badge text-bg-success mt-1" *ngIf="isNow(row, d.idx)">En curso</span>
+                  <div *ngFor="let h of slots" [hidden]="h.tramo !== row" class="space-y-0.5">
+                    <div class="font-medium">{{ h.ramo || '—' }}</div>
+                    <div class="text-gray-500 text-xs" *ngIf="h.sala">{{ h.sala }}</div>
+                    <span
+                      class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 mt-1"
+                      *ngIf="isNow(row, d.idx)"
+                      >En curso</span
+                    >
                   </div>
                 </ng-container>
               </td>
@@ -116,19 +148,25 @@
           </tbody>
         </table>
       </div>
-      <div *ngIf="!p.timeRows.length" class="text-muted">Sin horario publicado.</div>
+      <div *ngIf="!p.timeRows.length" class="text-gray-500">Sin horario publicado.</div>
     </ng-container>
 
     <!-- ===== Mapa / Oficina ===== -->
     <div class="mt-4" *ngIf="p.mapaUrl">
-      <h2 class="h5">Mapa / Oficina</h2>
-      <img [src]="p.mapaUrl" class="w-100 rounded-3 border" alt="Mapa" />
+      <h2 class="text-lg font-semibold text-[#0F3F7A]">Mapa / Oficina</h2>
+      <img [src]="p.mapaUrl" class="w-full rounded-xl border mt-2" alt="Mapa" />
     </div>
 
-    <!-- ===== Botón Volver al final de la card ===== -->
-    <hr class="my-4" />
-    <div class="d-flex">
-      <button type="button" class="btn btn-outline-secondary ms-auto" (click)="goBack()">← Volver</button>
+    <!-- Botón volver -->
+    <hr class="my-4 border-gray-200" />
+    <div class="flex">
+      <button
+        type="button"
+        class="ml-auto inline-flex items-center rounded-md border px-3 py-2 text-gray-700 hover:bg-gray-50"
+        (click)="goBack()"
+      >
+        ← Volver
+      </button>
     </div>
   </div>
 </div>

@@ -8,21 +8,26 @@
           Bienvenidos al Departamento de Mecánica
         </h1>
         <h2 class="text-4xl font-medium text-[#0F3F7A] mb-1 text-center">
-          Informate sobre
+          Infórmate sobre
         </h2>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <app-card
+        <a
           *ngFor="let solution of solutions; index as i"
-          [title]="solution.title"
-          [description]="solution.description"
-          [linkUrl]="solution.linkUrl"
-          [imageUrl]="solution.imageUrl"
-          [cardIndex]="i"
-        ></app-card>
+          class="block"
+          [routerLink]="solution.link"
+        >
+          <app-card
+            [title]="solution.title"
+            [description]="solution.description"
+            [imageUrl]="solution.imageUrl"
+            [cardIndex]="i"
+          ></app-card>
+        </a>
       </div>
     </div>
   </main>
+
   <app-footer></app-footer>
 </div>
