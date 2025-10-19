@@ -1,0 +1,22 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <form (ngSubmit)="submit()" class="bg-white p-6 rounded-xl shadow w-full max-w-sm">
+    <h1 class="text-xl font-semibold mb-4 text-[#0F3F7A]">Ingreso Administrador</h1>
+
+    <label class="block text-sm mb-1">Usuario</label>
+    <input [(ngModel)]="username" name="username" class="w-full border rounded p-2 mb-3" />
+
+    <label class="block text-sm mb-1">Contraseña</label>
+    <input type="password" [(ngModel)]="password" name="password" class="w-full border rounded p-2 mb-4" />
+
+    <button class="w-full bg-[#0F3F7A] text-white py-2 rounded hover:opacity-90">Entrar</button>
+
+    <p *ngIf="error" class="text-red-600 text-sm mt-3">{{ error }}</p>
+
+    <div class="text-xs text-gray-500 mt-4">
+      Tip: prueba con <strong>admin / admin</strong> o <strong>bastian / 1234</strong>
+    </div>
+    <a routerLink="/" class="block text-center text-sm text-blue-700 mt-3 hover:underline">
+      ← Volver al inicio
+    </a>
+  </form>
+</div>

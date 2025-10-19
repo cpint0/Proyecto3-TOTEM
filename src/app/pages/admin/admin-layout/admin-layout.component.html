@@ -1,0 +1,26 @@
+<div class="min-h-screen bg-gray-50">
+  <header class="sticky top-0 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a routerLink="/" class="text-[#0F3F7A] font-bold">Tótem Mecánica</a>
+        <nav class="flex items-center gap-3 text-sm">
+          <a routerLink="/admin" class="hover:underline">Dashboard</a>
+          <a routerLink="/admin/staff" class="hover:underline">Staff</a>
+          <a routerLink="/admin/rooms" class="hover:underline">Salas</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          class="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200"
+          (click)="logout()"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-4">
+    <router-outlet></router-outlet>
+  </main>
+</div>
