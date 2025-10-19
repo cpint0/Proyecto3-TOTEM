@@ -1,0 +1,144 @@
+<a routerLink="/admin/staff" class="text-sm text-blue-700 hover:underline">&larr; Volver</a>
+<h2 class="text-xl font-semibold text-[#0F3F7A] mt-2 mb-4">
+  {{ isNew() ? 'Nuevo' : 'Editar' }} Staff
+</h2>
+
+<div class="bg-white rounded-xl shadow p-4 grid md:grid-cols-3 gap-4" *ngIf="s() as x">
+  <!-- ===== Datos básicos ===== -->
+  <div class="md:col-span-2 space-y-3">
+    <div>
+      <label class="block text-sm">Nombre</label>
+      <input [ngModel]="x.nombre" (ngModelChange)="update('nombre', $event)" class="w-full border rounded p-2" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm">Correo</label>
+        <input [ngModel]="x.correo" (ngModelChange)="update('correo', $event)" class="w-full border rounded p-2" />
+      </div>
+      <div>
+        <label class="block text-sm">Anexo</label>
+        <input [ngModel]="x.anexo" (ngModelChange)="update('anexo', $event)" class="w-full border rounded p-2" />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm">Ubicación</label>
+      <input [ngModel]="x.ubicacion" (ngModelChange)="update('ubicacion', $event)" class="w-full border rounded p-2" />
+    </div>
+
+    <div>
+      <label class="block text-sm">Rol</label>
+      <select [ngModel]="x.rol" (ngModelChange)="update('rol', $event)" class="w-full border rounded p-2">
+        <option value="academicos">Académicos</option>
+        <option value="funcionarios">Funcionarios</option>
+        <option value="admin">Admin</option>
+        <option value="laboratorio">Laboratorio</option>
+        <option value="aseo">Aseo</option>
+        <option value="centro">Centro</option>
+      </select>
+    </div>
+
+    <!-- ===== Horario ===== -->
+    <hr class="my-4" />
+    <h3 class="text-lg font-semibold text-[#0F3F7A]">Horario</h3>
+
+    <!-- Form agregar bloque -->
+    <div class="grid md:grid-cols-5 gap-3 items-end">
+      <div>
+        <label class="block text-sm">Día</label>
+        <select
+          [ngModel]="slot().dia"
+          (ngModelChange)="setSlot('dia', $event)"
+          class="w-full border rounded p-2"
+        >
+          <option *ngFor="let d of DAYS" [value]="d">{{ d }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm">Inicio</label>
+        <input type="time"
+          [ngModel]="slot().start"
+          (ngModelChange)="setSlot('start', $event)"
+          class="w-full border rounded p-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm">Término</label>
+        <input type="time"
+          [ngModel]="slot().end"
+          (ngModelChange)="setSlot('end', $event)"
+          class="w-full border rounded p-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm">Ramo (opcional)</label>
+        <input
+          [ngModel]="slot().ramo"
+          (ngModelChange)="setSlot('ramo', $event)"
+          class="w-full border rounded p-2" />
+      </div>
+
+      <div>
+        <label class="block text-sm">Sala (opcional)</label>
+        <input
+          [ngModel]="slot().sala"
+          (ngModelChange)="setSlot('sala', $event)"
+          class="w-full border rounded p-2" />
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button (click)="addSlot()" class="px-4 py-2 rounded bg-[#0F3F7A] text-white">
+        Agregar bloque
+      </button>
+    </div>
+
+    <!-- Tabla de bloques -->
+    <div class="table-responsive mt-3" *ngIf="x.horario?.length; else noSlots">
+      <table class="table table-sm min-w-full">
+        <thead>
+          <tr class="border-b">
+            <th class="py-2 text-left">Día</th>
+            <th class="py-2 text-left">Tramo</th>
+            <th class="py-2 text-left">Ramo</th>
+            <th class="py-2 text-left">Sala</th>
+            <th class="py-2 text-left">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let h of x.horario; index as i" class="border-b">
+            <td class="py-2">{{ h.dia }}</td>
+            <td class="py-2">{{ h.tramo }}</td>
+            <td class="py-2">{{ h.ramo || '—' }}</td>
+            <td class="py-2">{{ h.sala || '—' }}</td>
+            <td class="py-2">
+              <button (click)="removeSlot(i)" class="text-red-600 hover:underline">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #noSlots>
+      <div class="text-gray-500">Aún no hay bloques agregados.</div>
+    </ng-template>
+
+    <div class="flex gap-2 mt-4">
+      <button (click)="save()" class="px-4 py-2 rounded bg-[#0F3F7A] text-white">Guardar</button>
+      <button *ngIf="!isNew()" (click)="remove()" class="px-4 py-2 rounded bg-red-600 text-white">Eliminar</button>
+    </div>
+  </div>
+
+  <!-- ===== Foto ===== -->
+  <div>
+    <div class="mb-2 text-sm">Foto de perfil</div>
+    <div class="w-40 h-40 rounded-xl overflow-hidden border bg-gray-100">
+      <img *ngIf="x.fotoUrl" [src]="x.fotoUrl" class="w-full h-full object-cover" />
+    </div>
+    <input type="file" accept="image/*" class="mt-3" (change)="onFileSelected($event)" />
+    <p class="text-xs text-gray-500 mt-2">
+      (Demo) Se guarda como DataURL en localStorage. Con backend, sube la imagen y guarda la URL pública.
+    </p>
+  </div>
+</div>
