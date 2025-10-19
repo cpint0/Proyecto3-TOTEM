@@ -1,13 +1,8 @@
 <div class="flex flex-col min-h-screen">
   <app-navbar></app-navbar>
 
-  <!-- CLASES DE CORRECCIÓN APLICADAS:
-       1. pt-24: Asegura que el contenido comience debajo de la navbar (h-20/5rem).
-       2. flex-grow, overflow-y-auto, h-0: Solucionan el scroll global de la ventana.
-  -->
   <main class="px-4 pt-24 flex-grow overflow-y-auto h-0">
     <div class="max-w-7xl mx-auto pt-0 pb-1">
-      <!-- Contenedor para los títulos con fondo semi-transparente -->
       <div class="bg-[#F8F8F8]/90 p-8 rounded-lg shadow-2xl mb-8">
         <h1 class="text-5xl font-extrabold text-[#0F3F7A] mb-6 text-center">
           Bienvenidos al Departamento de Mecánica
@@ -17,15 +12,14 @@
         </h2>
       </div>
 
-      <!-- Tarjetas de Solución -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <app-card
           *ngFor="let solution of solutions; index as i"
           [title]="solution.title"
           [description]="solution.description"
           [linkUrl]="solution.linkUrl"
-          [cardIndex]="i"
           [imageUrl]="solution.imageUrl"
+          [cardIndex]="i"
         ></app-card>
       </div>
     </div>

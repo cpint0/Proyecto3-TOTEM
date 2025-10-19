@@ -1,11 +1,42 @@
 <a
   [href]="linkUrl"
-  class="bg-white rounded-lg shadow-xl overflow-hidden transform transition duration-300 hover:scale-105 block"
+  class="group w-full h-80 mx-auto [perspective:1000px] cursor-pointer block"
+  target="_blank"
 >
-  <img [src]="imageUrl" class="max-w-screen-xl h-64 object-cover mx-auto" />
-  <div class="p-4">
-    <h3 class="text-4xl text-center font-extrabold text-gray-900 mb-1">
-      {{ title }}
-    </h3>
+  <div
+    class="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] shadow-xl rounded-lg"
+  >
+    <div
+      class="absolute w-full h-full [backface-visibility:hidden] flex flex-col items-center justify-center rounded-lg bg-white border border-gray-200 p-6"
+    >
+      <img
+        [src]="imageUrl"
+        [alt]="title"
+        class="w-64 h-64 object-contain mb-6"
+      />
+      <h3
+        class="text-2xl font-bold text-gray-800 text-center leading-snug px-2"
+      >
+        {{ title }}
+      </h3>
+    </div>
+
+    <div
+      class="absolute w-full h-full [backface-visibility:hidden] flex flex-col p-6 rounded-lg bg-blue-600 text-white [transform:rotateY(180deg)] justify-center items-center"
+    >
+      <h3
+        class="text-2xl font-bold mb-4 text-center border-b-2 border-blue-400 pb-2"
+      >
+        {{ title }}
+      </h3>
+      <p class="text-base text-center italic flex-grow overflow-hidden mb-4">
+        {{ description }}
+      </p>
+      <button
+        class="py-2 px-6 bg-white text-blue-700 font-bold rounded-full shadow-lg transition hover:bg-blue-100"
+      >
+        VER MÁS
+      </button>
+    </div>
   </div>
 </a>
