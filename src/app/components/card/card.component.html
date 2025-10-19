@@ -1,6 +1,6 @@
 <a
   [href]="linkUrl"
-  class="group w-full h-80 mx-auto [perspective:1000px] cursor-pointer block"
+  class="group w-full h-96 mx-auto [perspective:1000px] cursor-pointer block"
   target="_blank"
 >
   <div
@@ -12,10 +12,10 @@
       <img
         [src]="imageUrl"
         [alt]="title"
-        class="w-64 h-64 object-contain mb-6"
+        class="w-60 h-60 object-contain mb-6"
       />
       <h3
-        class="text-2xl font-bold text-gray-800 text-center leading-snug px-2"
+        class="text-3xl font-bold text-gray-800 text-center leading-snug px-2"
       >
         {{ title }}
       </h3>
@@ -25,17 +25,19 @@
       class="absolute w-full h-full [backface-visibility:hidden] flex flex-col p-6 rounded-lg bg-blue-600 text-white [transform:rotateY(180deg)] justify-center items-center"
     >
       <h3
-        class="text-2xl font-bold mb-4 text-center border-b-2 border-blue-400 pb-2"
+        class="text-4xl font-bold mb-4 text-center border-b-2 border-blue-400 pb-2"
       >
         {{ title }}
       </h3>
-      <p class="text-base text-center italic flex-grow overflow-hidden mb-4">
+      <p
+        class="text-2xl font-bold text-center arial flex-grow overflow-hidden mb-4"
+      >
         {{ description }}
       </p>
       <button
-        class="py-2 px-6 bg-white text-blue-700 font-bold rounded-full shadow-lg transition hover:bg-blue-100"
+        class="text-4xl py-2 px-10 bg-white text-blue-700 font-bold rounded-full shadow-lg transition hover:bg-blue-100"
       >
-        VER MÁS
+        Ver Más
       </button>
     </div>
   </div>
