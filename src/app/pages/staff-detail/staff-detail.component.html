@@ -152,10 +152,12 @@
     </ng-container>
 
     <!-- ===== Mapa / Oficina ===== -->
-    <div class="mt-4" *ngIf="p.mapaUrl">
+    <!-- ===== Mapa / Oficina ===== -->
+    <div class="mt-4" *ngIf="p.mapa as m">
       <h2 class="text-lg font-semibold text-[#0F3F7A]">Mapa / Oficina</h2>
-      <img [src]="p.mapaUrl" class="w-full rounded-xl border mt-2" alt="Mapa" />
+      <app-floor-view [floor]="m.floor" [activeRoomId]="m.roomId"></app-floor-view>
     </div>
+
 
     <!-- Botón volver -->
     <hr class="my-4 border-gray-200" />

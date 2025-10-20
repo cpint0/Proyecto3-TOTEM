@@ -1,0 +1,141 @@
+<div class="max-w-7xl mx-auto p-4">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-semibold text-[#0F3F7A]">Diseñador de salas</h2>
+    <a routerLink="/admin" class="px-3 py-1.5 rounded border hover:bg-gray-50">← Volver</a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-4 mb-4">
+    <div class="flex flex-wrap gap-3 items-end">
+      <div>
+        <label class="block text-sm mb-1">Piso</label>
+        <div class="inline-flex gap-2">
+          <button *ngFor="let f of [1,2,3,4]"
+            (click)="changeFloor(f)"
+            class="px-3 py-1.5 rounded border"
+            [class.bg-[#0F3F7A]]="floor()===f" [class.text-white]="floor()===f">{{ f }}</button>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Tamaño lienzo</label>
+        <div class="flex items-center gap-2">
+        <input
+            type="number"
+            class="w-28 border rounded px-2 py-1"
+            [ngModel]="schema()?.width"
+            (ngModelChange)="onCanvasSize('width', $event)"
+        />
+        <span>×</span>
+        <input
+            type="number"
+            class="w-28 border rounded px-2 py-1"
+            [ngModel]="schema()?.height"
+            (ngModelChange)="onCanvasSize('height', $event)"
+        />
+        <button class="ml-2 px-3 py-1.5 rounded border" (click)="saveAll()">
+            Guardar lienzo + salas
+        </button>
+        </div>
+      </div>
+
+      <div class="ml-auto">
+        <button class="px-3 py-1.5 rounded bg-[#0F3F7A] text-white" (click)="addRoom()">+ Nueva sala</button>
+        <button class="px-3 py-1.5 rounded border ml-2" (click)="removeRoom()" [disabled]="!selectedId()">
+          Eliminar seleccionada
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-[1fr,320px] gap-4">
+    <!-- Lienzo -->
+    <div class="bg-white rounded-xl shadow p-3 overflow-auto">
+      <svg [attr.viewBox]="viewBox()" class="w-full h-[520px] border rounded">
+        <!-- fondo -->
+        <rect x="0" y="0" [attr.width]="schema()?.width || 1000" [attr.height]="schema()?.height || 600"
+              fill="#f8fafc"></rect>
+
+        <!-- salas -->
+        <ng-container *ngIf="schema() as s">
+          <g *ngFor="let r of s.rooms">
+            <rect
+              [attr.x]="r.x" [attr.y]="r.y" [attr.width]="r.w" [attr.height]="r.h"
+              [attr.fill]="selectedId()===r.id ? '#DBEAFE' : '#E5E7EB'"
+              stroke="#0F3F7A" stroke-width="1.5"
+              (mousedown)="onRectDown($event, r.id)"
+              class="cursor-move"
+            />
+            <!-- etiqueta -->
+            <text [attr.x]="r.x + 6" [attr.y]="r.y + 16" font-size="12" fill="#0F172A">
+              {{ r.name }}
+            </text>
+
+            <!-- handles de resize -->
+            <circle [attr.cx]="r.x"         [attr.cy]="r.y"         r="6" fill="white" stroke="#0F3F7A"
+                    class="cursor-nwse-resize" (mousedown)="select(r.id); onHandleDown($event, 'resize-nw')"></circle>
+            <circle [attr.cx]="r.x + r.w"   [attr.cy]="r.y"         r="6" fill="white" stroke="#0F3F7A"
+                    class="cursor-nesw-resize" (mousedown)="select(r.id); onHandleDown($event, 'resize-ne')"></circle>
+            <circle [attr.cx]="r.x"         [attr.cy]="r.y + r.h"   r="6" fill="white" stroke="#0F3F7A"
+                    class="cursor-nesw-resize" (mousedown)="select(r.id); onHandleDown($event, 'resize-sw')"></circle>
+            <circle [attr.cx]="r.x + r.w"   [attr.cy]="r.y + r.h"   r="6" fill="white" stroke="#0F3F7A"
+                    class="cursor-nwse-resize" (mousedown)="select(r.id); onHandleDown($event, 'resize-se')"></circle>
+          </g>
+        </ng-container>
+      </svg>
+    </div>
+
+    <!-- Propiedades -->
+    <div class="bg-white rounded-xl shadow p-4">
+      <h3 class="text-lg font-semibold text-[#0F3F7A] mb-3">Propiedades</h3>
+      <div *ngIf="schema() as s">
+        <ng-container *ngIf="selectedId() as selId; else noSel">
+          <div *ngFor="let r of s.rooms" [hidden]="r.id !== selId">
+            <label class="block text-sm mb-1">ID</label>
+            <input class="w-full border rounded px-3 py-2 mb-2" [ngModel]="r.id" (ngModelChange)="r.id = $event" />
+
+            <label class="block text-sm mb-1">Nombre</label>
+            <input class="w-full border rounded px-3 py-2 mb-2" [ngModel]="r.name" (ngModelChange)="r.name = $event" />
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-sm mb-1">X</label>
+                <input type="number" class="w-full border rounded px-2 py-1"
+                       [ngModel]="r.x" (ngModelChange)="r.x = +$event" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Y</label>
+                <input type="number" class="w-full border rounded px-2 py-1"
+                       [ngModel]="r.y" (ngModelChange)="r.y = +$event" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">W</label>
+                <input type="number" class="w-full border rounded px-2 py-1"
+                       [ngModel]="r.w" (ngModelChange)="r.w = +$event" />
+              </div>
+              <div>
+                <label class="block text-sm mb-1">H</label>
+                <input type="number" class="w-full border rounded px-2 py-1"
+                       [ngModel]="r.h" (ngModelChange)="r.h = +$event" />
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <label class="block text-sm mb-1">Asignar a</label>
+            <div class="flex gap-2">
+              <select class="border rounded px-3 py-2 flex-1"
+                      [ngModel]="staffTarget()" (ngModelChange)="staffTarget.set($event)">
+                <option value="">— Selecciona —</option>
+                <option *ngFor="let s of staffList()" [value]="s.id">{{ s.nombre }} ({{ s.rol }})</option>
+              </select>
+              <button class="px-3 py-1.5 rounded bg-[#0F3F7A] text-white" (click)="assignToStaff()">Asignar</button>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noSel>
+          <div class="text-gray-500">Selecciona una sala del lienzo para editar.</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

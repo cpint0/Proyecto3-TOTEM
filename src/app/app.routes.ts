@@ -11,6 +11,7 @@ import { AdminLoginComponent } from './pages/admin/admin-login/admin-login.compo
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminStaffListComponent } from './pages/admin/admin-staff-list/admin-staff-list.component';
 import { AdminStaffEditComponent } from './pages/admin/admin-staff-edit/admin-staff-edit.component';
+import { AdminRoomsDesignerComponent } from './pages/admin/admin-rooms-designer/admin-rooms-designer.component';
 //import { AdminRoomsListComponent } from './pages/admin/rooms/admin-rooms-list.component';
 //import { AdminRoomsEditComponent } from './pages/admin/rooms/admin-rooms-edit.component';
 
@@ -31,7 +32,9 @@ export const routes: Routes = [
     children: [
       { path: '', component: AdminDashboardComponent },
       { path: 'staff', component: AdminStaffListComponent },
-      { path: 'staff/:id', component: AdminStaffEditComponent }, 
+      { path: 'staff/:id', component: AdminStaffEditComponent },
+      { path: 'rooms/designer', component: AdminRoomsDesignerComponent },
+      { path: 'rooms/designer/:floor', component: AdminRoomsDesignerComponent }, 
     ],
   },
 

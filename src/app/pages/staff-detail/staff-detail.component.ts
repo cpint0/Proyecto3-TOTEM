@@ -5,20 +5,36 @@ import { DataService } from '../../services/data.service';
 import { map, switchMap } from 'rxjs/operators';
 import { RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
+import { FloorViewComponent } from '../../components/floor-view/floor-view.component';
+
 
 type HorarioItem = { dia: string; tramo: string; ramo?: string; sala?: string; };
 type Vm = {
-  id: string; nombre: string; correo?: string; anexo?: string; ubicacion?: string;
-  fotoUrl?: string; mapaUrl?: string; horario?: HorarioItem[];
+  id: string;
+  nombre: string;
+  correo?: string;
+  anexo?: string;
+  ubicacion?: string;
+  fotoUrl?: string;
+  mapaUrl?: string;
+  horario?: HorarioItem[];
+
+  // ⬇️ NUEVO: para que el template pueda usar m.floor y m.roomId
+  mapa?: {
+    floor: number;
+    roomId: string;
+  };
+
   days: { idx: number; label: string; key: string }[];
-  grouped: Record<number, Array<HorarioItem & {startMin:number; endMin:number}>>;
+  grouped: Record<number, Array<HorarioItem & { startMin: number; endMin: number }>>;
   timeRows: string[];
 };
+
 
 @Component({
   standalone: true,
   selector: 'app-staff-detail',
-  imports: [AsyncPipe, NgFor, NgIf, KeyValuePipe, NgClass, RouterLink],
+  imports: [AsyncPipe, NgFor, NgIf, KeyValuePipe, NgClass, RouterLink, FloorViewComponent  ],
   templateUrl: './staff-detail.component.html',
   styleUrls: ['./staff-detail.component.css']
 })
@@ -95,7 +111,7 @@ export class StaffDetailComponent {
 
     return {
       id: p.id, nombre: p.nombre, correo: p.correo, anexo: p.anexo, ubicacion: p.ubicacion,
-      fotoUrl: p.fotoUrl, mapaUrl: p.mapaUrl, horario: p.horario,
+      fotoUrl: p.fotoUrl, mapaUrl: p.mapaUrl, horario: p.horario, mapa: p.mapa,
       days: this.DAYS, grouped, timeRows
     };
   }
