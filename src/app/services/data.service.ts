@@ -170,6 +170,13 @@ export class DataService {
     );
   }
 
+  getRoomName(floor: number, roomId: string): string {
+    const floors = this.readFloors(); // usa el helper que ya tienes internamente
+    const f = floors.find(x => x.floor === floor);
+    const r = f?.rooms.find(rr => rr.id === roomId);
+    return r?.name || roomId; // fallback al id si no hay nombre
+  }
+
 
 }
 

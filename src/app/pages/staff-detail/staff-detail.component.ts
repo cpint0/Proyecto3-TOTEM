@@ -40,7 +40,7 @@ type Vm = {
 })
 export class StaffDetailComponent {
   private route = inject(ActivatedRoute);
-  private data = inject(DataService);
+  public data = inject(DataService);
   private location = inject(Location);
   goBack() {
     this.location.back();
