@@ -21,6 +21,7 @@ type Vm = {
 
   // ⬇️ NUEVO: para que el template pueda usar m.floor y m.roomId
   mapa?: {
+    deptId?: string;
     floor: number;
     roomId: string;
   };

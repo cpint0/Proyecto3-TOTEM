@@ -34,7 +34,8 @@ export const routes: Routes = [
       { path: 'staff', component: AdminStaffListComponent },
       { path: 'staff/:id', component: AdminStaffEditComponent },
       { path: 'rooms/designer', component: AdminRoomsDesignerComponent },
-      { path: 'rooms/designer/:floor', component: AdminRoomsDesignerComponent }, 
+      { path: 'rooms/designer/:dept', component: AdminRoomsDesignerComponent },
+      { path: 'rooms/designer/:dept/:floor', component: AdminRoomsDesignerComponent },
     ],
   },
 

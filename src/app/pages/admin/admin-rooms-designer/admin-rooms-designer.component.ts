@@ -2,8 +2,8 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs'; // ⬅️ NUEVO
-import { DataService, FloorSchema, Staff } from '../../../services/data.service';
+import { forkJoin } from 'rxjs';
+import { DataService, FloorSchema, Staff, Department } from '../../../services/data.service';
 
 type DragState = {
   mode: 'move'|'resize-nw'|'resize-ne'|'resize-sw'|'resize-se'|null;
@@ -22,11 +22,17 @@ export class AdminRoomsDesignerComponent {
   private router = inject(Router);
   private data = inject(DataService);
 
+  // Departamento + piso
+  deptId = signal<string>('mecanica');
+  departments = signal<Department[]>([]);
+  newDeptName = signal<string>('');
+
   floor = signal<number>(1);
   schema = signal<FloorSchema | null>(null);
+
+  // UI y staff
   selectedId = signal<string>('');
   drag = signal<DragState | null>(null);
-
   staffList = signal<Staff[]>([]);
   staffTarget = signal<string>('');
 
@@ -36,10 +42,17 @@ export class AdminRoomsDesignerComponent {
   });
 
   ngOnInit() {
+    // Params: /admin/rooms/designer/:dept/:floor?
+    const dept = this.route.snapshot.paramMap.get('dept') || 'mecanica';
     const f = Number(this.route.snapshot.paramMap.get('floor') || '1');
+    this.deptId.set(dept);
     this.floor.set([1,2,3,4].includes(f) ? f : 1);
-    this.load();
+
+    this.data.getDepartments$().subscribe(d => this.departments.set(d));
     this.data.getAllStaff().subscribe(list => this.staffList.set(list));
+
+    this.load();
+
     window.addEventListener('mouseup', this.onMouseUp);
     window.addEventListener('mousemove', this.onMouseMove);
   }
@@ -49,16 +62,30 @@ export class AdminRoomsDesignerComponent {
   }
 
   load() {
-    this.data.getFloor$(this.floor()).subscribe(s => this.schema.set(structuredClone(s)));
+    this.data.getFloor$(this.deptId(), this.floor()).subscribe(s => this.schema.set(structuredClone(s)));
+  }
+
+  changeDept(id: string) {
+    this.deptId.set(id);
+    this.router.navigate(['/admin/rooms/designer', id, this.floor()]);
+    this.load();
+  }
+  addDept() {
+    const name = this.newDeptName().trim();
+    if (!name) return;
+    this.data.addDepartment(name).subscribe(d => {
+      this.newDeptName.set('');
+      this.departments.update(list => [...list, d]);
+      this.changeDept(d.id);
+    });
   }
 
   changeFloor(f: number) {
     this.floor.set(f);
-    this.router.navigate(['/admin/rooms/designer', f]);
+    this.router.navigate(['/admin/rooms/designer', this.deptId(), f]);
     this.load();
   }
 
-  // ⬅️ NUEVO: actualizar width/height desde el template
   onCanvasSize(key: 'width'|'height', val: number) {
     const s = this.schema();
     if (!s) return;
@@ -85,8 +112,8 @@ export class AdminRoomsDesignerComponent {
   saveAll() {
     const s = this.schema(); if (!s) return;
     const ops = [
-      this.data.setCanvasSize(this.floor(), s.width, s.height),
-      ...s.rooms.map(r => this.data.upsertRoom(this.floor(), r))
+      this.data.setCanvasSize(this.deptId(), this.floor(), s.width, s.height),
+      ...s.rooms.map(r => this.data.upsertRoom(this.deptId(), this.floor(), r))
     ];
     forkJoin(ops).subscribe(() => alert('Mapa guardado.'));
   }
@@ -94,12 +121,11 @@ export class AdminRoomsDesignerComponent {
   assignToStaff() {
     const id = this.selectedId(); const staffId = this.staffTarget();
     if (!id || !staffId) { alert('Selecciona una sala y un staff.'); return; }
-    this.data.assignStaffToRoom(staffId, this.floor(), id).subscribe(() => {
+    this.data.assignStaffToRoom(staffId, this.deptId(), this.floor(), id).subscribe(() => {
       alert('Sala asignada.');
     });
   }
 
-  // ====== Interacción (drag/resize) ======
   private get selected() {
     const s = this.schema(); if (!s) return null;
     const id = this.selectedId(); if (!id) return null;
@@ -112,8 +138,7 @@ export class AdminRoomsDesignerComponent {
     evt.stopPropagation();
     const r = this.selected; if (!r) return;
     this.drag.set({
-      mode,
-      startX: evt.clientX, startY: evt.clientY,
+      mode, startX: evt.clientX, startY: evt.clientY,
       orig: { x: r.x, y: r.y, w: r.w, h: r.h }
     });
   }
@@ -122,8 +147,7 @@ export class AdminRoomsDesignerComponent {
     this.select(id);
     const r = this.selected; if (!r) return;
     this.drag.set({
-      mode: 'move',
-      startX: evt.clientX, startY: evt.clientY,
+      mode: 'move', startX: evt.clientX, startY: evt.clientY,
       orig: { x: r.x, y: r.y, w: r.w, h: r.h }
     });
   }
@@ -136,8 +160,7 @@ export class AdminRoomsDesignerComponent {
     const dy = (evt.clientY - d.startY);
 
     if (d.mode === 'move') {
-      r.x = d.orig.x + dx;
-      r.y = d.orig.y + dy;
+      r.x = d.orig.x + dx; r.y = d.orig.y + dy;
     } else if (d.mode === 'resize-nw') {
       r.x = d.orig.x + dx; r.y = d.orig.y + dy;
       r.w = d.orig.w - dx; r.h = d.orig.h - dy;
@@ -159,4 +182,35 @@ export class AdminRoomsDesignerComponent {
   };
 
   onMouseUp = () => { this.drag.set(null); };
+
+  deleteDept() {
+    const id = this.deptId();
+    const d = this.departments().find(x => x.id === id);
+    if (!d) return;
+
+    if (this.departments().length <= 1) {
+      alert('No puedes eliminar el único departamento existente.');
+      return;
+    }
+
+    const ok = confirm(`¿Eliminar el departamento "${d.name}" (${d.id})?\n` +
+                      'Esto eliminará sus pisos/salas y quitará las asignaciones de staff a este departamento.');
+    if (!ok) return;
+
+    this.data.deleteDepartment(id).subscribe(() => {
+      // refresca lista
+      this.data.getDepartments$().subscribe(list => {
+        this.departments.set(list);
+        // elige el primero disponible
+        const next = list[0];
+        this.deptId.set(next?.id || 'mecanica');
+        this.selectedId.set('');
+        // navega y recarga
+        this.router.navigate(['/admin/rooms/designer', this.deptId(), this.floor()]);
+        this.load();
+        alert('Departamento eliminado.');
+      });
+    });
+  }
+
 }

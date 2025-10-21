@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
+/** ===================== MODELOS ===================== **/
+
 export interface Staff {
   id: string;
   nombre: string;
@@ -11,72 +13,67 @@ export interface Staff {
   fotoUrl?: string;
   horario?: { dia: string; tramo: string; ramo?: string; sala?: string }[];
   mapaUrl?: string;
-  mapa?: {
-    floor: number;   // piso (1..N)
-    roomId: string;  // id de la sala (coincide con la que defines en el diseñador)
-  };
+  /** ⬇️ ahora incluye deptId para ser multi-departamento */
+  mapa?: { deptId?: string; floor: number; roomId: string };
+}
 
+export interface Room {
+  id: string;
+  name: string;
+  x: number; y: number; w: number; h: number;
 }
 
 export interface FloorSchema {
-  floor: number;                // 1..N
-  width: number;                // ancho del lienzo (ej. 1000)
-  height: number;               // alto del lienzo (ej. 600)
-  rooms: Array<{
-    id: string;                 // identificador estable (ej. "of_214")
-    name: string;               // etiqueta legible (ej. "Oficina 214")
-    x: number; y: number;       // posición (svg units)
-    w: number; h: number;       // tamaño
-  }>;
+  floor: number; // 1..N
+  width: number;
+  height: number;
+  rooms: Room[];
 }
+
+export interface Department {
+  id: string;     // slug único: ej "mecanica-a"
+  name: string;   // nombre visible: "Ing. Mecánica A"
+  floors: FloorSchema[];
+}
+
+export interface MapsSchema {
+  departments: Department[];
+}
+
+/** ===================== SERVICIO ===================== **/
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
   private http = inject(HttpClient);
 
-  /** Base desde /public/assets/data (solo lectura) */
+  /** ----- STAFF base + overlay (igual que antes) ----- */
+  private LS_KEY_STAFF = 'staff.overlay';
+
   private base$ = this.http.get<Staff[]>('/assets/data/staff.json').pipe(shareReplay(1));
 
-  /** Clave de overlay (mock “persistente” en localStorage) */
-  private LS_KEY = 'staff.overlay';
-
-  /** Lee overlay desde localStorage */
   private readOverlay(): Staff[] {
-    try { return JSON.parse(localStorage.getItem(this.LS_KEY) || '[]'); }
+    try { return JSON.parse(localStorage.getItem(this.LS_KEY_STAFF) || '[]'); }
     catch { return []; }
   }
-
-  /** Guarda overlay en localStorage */
   private writeOverlay(list: Staff[]) {
-    localStorage.setItem(this.LS_KEY, JSON.stringify(list));
+    localStorage.setItem(this.LS_KEY_STAFF, JSON.stringify(list));
   }
-
-  /** Combina base + overlay (overlay pisa por id) */
-  private merge(base: Staff[], overlay: Staff[]): Staff[] {
+  private mergeStaff(base: Staff[], overlay: Staff[]): Staff[] {
     const byId = new Map(base.map(s => [s.id, s]));
     for (const o of overlay) byId.set(o.id, o);
     return Array.from(byId.values());
   }
 
-  /** ===== API pública (fácil de reemplazar por backend) ===== */
-
-  /** Lista completa */
   getAllStaff(): Observable<Staff[]> {
     const overlay = this.readOverlay();
-    return this.base$.pipe(map(base => this.merge(base, overlay)));
+    return this.base$.pipe(map(base => this.mergeStaff(base, overlay)));
   }
-
-  /** Por rol */
   getByRol(rol: Staff['rol']): Observable<Staff[]> {
     return this.getAllStaff().pipe(map(list => list.filter(s => s.rol === rol)));
   }
-
-  /** Por id */
   getById(id: string): Observable<Staff> {
     return this.getAllStaff().pipe(map(list => list.find(s => s.id === id)!));
   }
-
-  /** Crear/Actualizar (upsert) */
   upsertStaff(s: Staff): Observable<void> {
     const overlay = this.readOverlay();
     const idx = overlay.findIndex(x => x.id === s.id);
@@ -84,100 +81,165 @@ export class DataService {
     this.writeOverlay(overlay);
     return of(void 0);
   }
-
-  /** Eliminar */
   deleteStaff(id: string): Observable<void> {
     const overlay = this.readOverlay().filter(x => x.id !== id);
     this.writeOverlay(overlay);
     return of(void 0);
   }
 
-    private LS_KEY_FLOORS = 'floors.schema';
+  /** ----- MAPAS multi-departamento en localStorage ----- */
+  private LS_KEY_MAPS = 'maps.schema';
 
-  /** Lee el esquema (si no existe, crea uno base de ejemplo) */
-  private readFloors(): FloorSchema[] {
-    const raw = localStorage.getItem(this.LS_KEY_FLOORS);
+  private readMaps(): MapsSchema {
+    const raw = localStorage.getItem(this.LS_KEY_MAPS);
     if (raw) {
-      try { return JSON.parse(raw) as FloorSchema[]; } catch {}
+      try { return JSON.parse(raw) as MapsSchema; } catch {}
     }
-    // Esquema inicial (puedes editarlo libremente)
-    const seed: FloorSchema[] = [
-      { floor: 1, width: 1000, height: 600, rooms: [
-        { id:'of_101', name:'Oficina 101', x:60, y:60, w:180, h:120 },
-        { id:'of_102', name:'Oficina 102', x:280, y:60, w:200, h:120 },
-      ]},
-      { floor: 2, width: 1000, height: 600, rooms: [] },
-      { floor: 3, width: 1000, height: 600, rooms: [] },
-      { floor: 4, width: 1000, height: 600, rooms: [] },
-    ];
-    localStorage.setItem(this.LS_KEY_FLOORS, JSON.stringify(seed));
+    // Semilla inicial con un departamento por defecto:
+    const seed: MapsSchema = {
+      departments: [{
+        id: 'mecanica', name: 'Ingeniería Mecánica', floors: [
+          { floor: 1, width: 1000, height: 600, rooms: [] },
+          { floor: 2, width: 1000, height: 600, rooms: [] },
+          { floor: 3, width: 1000, height: 600, rooms: [] },
+          { floor: 4, width: 1000, height: 600, rooms: [] }
+        ]
+      }]
+    };
+    localStorage.setItem(this.LS_KEY_MAPS, JSON.stringify(seed));
     return seed;
   }
 
-  private writeFloors(floors: FloorSchema[]) {
-    localStorage.setItem(this.LS_KEY_FLOORS, JSON.stringify(floors));
+  private writeMaps(m: MapsSchema) {
+    localStorage.setItem(this.LS_KEY_MAPS, JSON.stringify(m));
   }
 
-  getFloors$(): Observable<FloorSchema[]> {
-    return of(this.readFloors());
+  /** ===== Departamentos ===== */
+  getDepartments$(): Observable<Department[]> {
+    return of(this.readMaps().departments);
   }
 
-  getFloor$(floor: number): Observable<FloorSchema> {
-    const all = this.readFloors();
-    let f = all.find(x => x.floor === floor);
-    if (!f) { f = { floor, width: 1000, height: 600, rooms: [] }; all.push(f); this.writeFloors(all); }
+  addDepartment(name: string): Observable<Department> {
+    const slug = this.slugify(name);
+    const maps = this.readMaps();
+    if (maps.departments.some(d => d.id === slug)) {
+      // si existe, agrega sufijo simple
+      const variant = slug + '-' + (Date.now()%1000);
+      maps.departments.push({ id: variant, name, floors: [] });
+      this.writeMaps(maps);
+      return of({ id: variant, name, floors: [] });
+    }
+    maps.departments.push({ id: slug, name, floors: [] });
+    this.writeMaps(maps);
+    return of({ id: slug, name, floors: [] });
+  }
+
+  renameDepartment(id: string, newName: string): Observable<void> {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === id);
+    if (d) { d.name = newName; this.writeMaps(maps); }
+    return of(void 0);
+  }
+
+  deleteDepartment(id: string): Observable<void> {
+    const maps = this.readMaps();
+    // 1) elimina el departamento y sus pisos/salas
+    maps.departments = maps.departments.filter(d => d.id !== id);
+    this.writeMaps(maps);
+
+    // 2) limpia asignaciones de staff que apuntaban a ese depto
+    const overlay = this.readOverlay();
+    let touched = false;
+    for (const s of overlay) {
+      if (s.mapa?.deptId === id) {
+        delete s.mapa; // o: s.mapa = undefined;
+        touched = true;
+      }
+    }
+    if (touched) this.writeOverlay(overlay);
+
+    return of(void 0);
+  }
+
+
+  private ensureDept(id: string): Department {
+    const maps = this.readMaps();
+    let d = maps.departments.find(x => x.id === id);
+    if (!d) {
+      d = { id, name: id, floors: [] };
+      maps.departments.push(d);
+      this.writeMaps(maps);
+    }
+    return d;
+  }
+
+  /** ===== Pisos / Salas por departamento ===== */
+  getFloor$(deptId: string, floor: number): Observable<FloorSchema> {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === deptId) || this.ensureDept(deptId);
+    let f = d.floors.find(x => x.floor === floor);
+    if (!f) { f = { floor, width: 1000, height: 600, rooms: [] }; d.floors.push(f); this.writeMaps(maps); }
     return of(f);
   }
 
-  upsertRoom(floor: number, room: FloorSchema['rooms'][number]): Observable<void> {
-    const all = this.readFloors();
-    const fi = all.findIndex(x => x.floor === floor);
-    if (fi < 0) all.push({ floor, width: 1000, height: 600, rooms: [room] });
-    else {
-      const rooms = all[fi].rooms;
-      const ri = rooms.findIndex(r => r.id === room.id);
-      if (ri >= 0) rooms[ri] = room; else rooms.push(room);
+  setCanvasSize(deptId: string, floor: number, width: number, height: number): Observable<void> {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === deptId) || this.ensureDept(deptId);
+    let f = d.floors.find(x => x.floor === floor);
+    if (!f) { f = { floor, width, height, rooms: [] }; d.floors.push(f); }
+    else { f.width = width; f.height = height; }
+    this.writeMaps(maps);
+    return of(void 0);
+  }
+
+  upsertRoom(deptId: string, floor: number, room: Room): Observable<void> {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === deptId) || this.ensureDept(deptId);
+    let f = d.floors.find(x => x.floor === floor);
+    if (!f) { f = { floor, width: 1000, height: 600, rooms: [] }; d.floors.push(f); }
+    const ri = f.rooms.findIndex(r => r.id === room.id);
+    if (ri >= 0) f.rooms[ri] = room; else f.rooms.push(room);
+    this.writeMaps(maps);
+    return of(void 0);
+  }
+
+  deleteRoom(deptId: string, floor: number, roomId: string): Observable<void> {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === deptId);
+    if (d) {
+      const f = d.floors.find(x => x.floor === floor);
+      if (f) f.rooms = f.rooms.filter(r => r.id !== roomId);
+      this.writeMaps(maps);
     }
-    this.writeFloors(all);
     return of(void 0);
   }
 
-  deleteRoom(floor: number, roomId: string): Observable<void> {
-    const all = this.readFloors();
-    const f = all.find(x => x.floor === floor);
-    if (f) { f.rooms = f.rooms.filter(r => r.id !== roomId); this.writeFloors(all); }
-    return of(void 0);
-  }
-
-  setCanvasSize(floor: number, width: number, height: number): Observable<void> {
-    const all = this.readFloors();
-    const f = all.find(x => x.floor === floor);
-    if (f) { f.width = width; f.height = height; this.writeFloors(all); }
-    return of(void 0);
-  }
-
- 
-  assignStaffToRoom(staffId: string, floor: number, roomId: string) {
-    return this.getById(staffId).pipe(
-      map((s: Staff) => {
-        const updated: Staff = { ...s, mapa: { floor, roomId } };
-        const overlay: Staff[] = this.readOverlay(); 
-        const idx = overlay.findIndex((x: Staff) => x.id === s.id);
-        if (idx >= 0) overlay[idx] = updated; else overlay.push(updated);
-        this.writeOverlay(overlay);
-        return;
-      })
-    );
-  }
-
-  getRoomName(floor: number, roomId: string): string {
-    const floors = this.readFloors(); // usa el helper que ya tienes internamente
-    const f = floors.find(x => x.floor === floor);
+  getRoomName(deptId: string, floor: number, roomId: string): string {
+    const maps = this.readMaps();
+    const d = maps.departments.find(x => x.id === deptId);
+    const f = d?.floors.find(x => x.floor === floor);
     const r = f?.rooms.find(rr => rr.id === roomId);
-    return r?.name || roomId; // fallback al id si no hay nombre
+    return r?.name || roomId;
   }
 
+  /** ===== Asignación de sala a Staff (multi-departamento) ===== */
+  assignStaffToRoom(staffId: string, deptId: string, floor: number, roomId: string): Observable<void> {
+    return this.getById(staffId).pipe(map((s: Staff) => {
+      const updated: Staff = { ...s, mapa: { deptId, floor, roomId } };
+      const overlay: Staff[] = this.readOverlay();
+      const idx = overlay.findIndex((x: Staff) => x.id === s.id);
+      if (idx >= 0) overlay[idx] = updated; else overlay.push(updated);
+      this.writeOverlay(overlay);
+      return;
+    }));
+  }
 
+  /** Utils */
+  private slugify(name: string): string {
+    return (name || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/\p{Diacritic}/gu,'')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
 }
-
-
