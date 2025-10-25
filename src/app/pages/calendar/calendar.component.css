@@ -1,0 +1,57 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f7fafc;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: #e5e7eb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.day-cell {
+  padding: 4px;
+  min-height: 80px;
+  background-color: white;
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+}
+
+.holiday-day {
+  background-color: #ffedd5;
+}
+
+.day-number {
+  font-weight: bold;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.holiday-name {
+  /* comportamiento general */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* Fallback y comportamiento multi-línea tradicional */
+  display: -webkit-box; /* WebKit/Blink (Chrome, Safari) */
+  -webkit-box-orient: vertical; /* WebKit/Blink */
+  -webkit-line-clamp: 2; /* WebKit/Blink (limita a 2 líneas) */
+
+  /* Propiedad estándar (nueva especificación) — moderna y sin prefijo */
+  line-clamp: 2;
+
+  /* Opcionales: mantener compatibilidad visual y recorte fino */
+  -webkit-box-orient: vertical; /* redundante pero explícita */
+  display: box; /* intento de compatibilidad con spec antigua (no dañará) */
+
+  /* Estética */
+  font-size: 0.65rem;
+  color: #9f1239;
+  line-height: 1.2;
+  margin-top: 2px;
+}
