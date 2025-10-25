@@ -1,28 +1,100 @@
-<nav
-  class="bg-[oklch(95%_0.08_95.746)] text-[#0F3F7A] border-b border-gray-400 text-gray-900 fixed top-0 w-full z-10"
->
-  <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between h-24 items-center">
-      <div class="flex items-center space-x-4">
+<nav class="fixed top-0 w-full z-10 bg-[#061d3a] text-white shadow-lg">
+  <div class="mx-auto max-w-full px-0">
+    <div class="flex h-24 items-center justify-between w-full">
+      <!-- LEFT: UTA logo + text -->
+      <div class="flex items-center ml-0">
         <img
           src="assets/img/general/logoweb_UTA.png"
-          alt="Logo"
-          class="h-16 w-auto"
+          alt="Logo UTA"
+          class="h-20 w-auto ml-4"
         />
-
-        <div class="flex flex-col text-[#0F3F7A]">
-          <span class="text-2xl font-bold leading-tight whitespace-nowrap">
-            Universidad de Tarapacá
-          </span>
-          <span class="text-xl font-medium leading-tight whitespace-nowrap">
-            Facultad de Ingeniería
-          </span>
+        <div class="flex flex-col text-white/90 leading-tight ml-4">
+          <span class="text-2xl font-extrabold tracking-wider"
+            >Universidad de Tarapacá</span
+          >
+          <span class="text-xl font-semibold tracking-wide"
+            >Facultad de Ingeniería</span
+          >
         </div>
       </div>
-      <div
-        class="text-xl font-bold text-gray-700 whitespace-nowrap mr-12 ml-16"
-      >
-        {{ currentDateTime }}
+
+      <!-- RIGHT: navigation links -->
+      <div class="flex items-center mr-8 space-x-4">
+        <a
+          routerLink="/"
+          aria-current="page"
+          class="inline-flex items-center h-24 px-8 text-xl font-semibold text-white hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Inicio
+        </a>
+        <a
+          routerLink="/academicos"
+          class="inline-flex items-center h-24 px-6 text-xl font-semibold text-gray-200 hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Academicos
+        </a>
+        <a
+          routerLink="/funcionarios"
+          class="inline-flex items-center h-24 px-6 text-xl font-semibold text-gray-200 hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Funcionarios
+        </a>
+        <a
+          routerLink="/salas"
+          class="inline-flex items-center h-24 px-6 text-xl font-semibold text-gray-200 hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Salas
+        </a>
+        <a
+          routerLink="/calendario"
+          class="inline-flex items-center h-24 px-6 text-xl font-semibold text-gray-200 hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Calendario
+        </a>
+        <a
+          routerLink="/acercade"
+          class="inline-flex items-center h-24 px-6 text-xl font-semibold text-gray-200 hover:text-yellow-300 hover:bg-white/10 rounded-md transition-all duration-300"
+        >
+          Acerca de
+        </a>
+
+        <!-- Search bar -->
+        <div class="relative inline-flex items-center h-24 pl-4">
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            [(ngModel)]="searchQuery"
+            (input)="onQueryChange()"
+            (keydown.enter)="searchAndNavigate()"
+            (focus)="onQueryChange()"
+            class="h-12 rounded-lg px-4 text-base bg-white/10 placeholder-gray-300 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all duration-200"
+            aria-autocomplete="list"
+            aria-haspopup="true"
+            role="searchbox"
+          />
+
+          <ul
+            *ngIf="showSuggestions"
+            class="absolute left-0 top-full mt-2 w-96 bg-white rounded-lg shadow-lg py-2 z-50"
+          >
+            <li
+              *ngFor="let s of suggestions"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              (click)="selectSuggestion(s)"
+            >
+              <span class="block text-base font-medium text-gray-800">{{
+                s.name
+              }}</span>
+              <span class="block text-sm text-gray-500">{{ s.type }}</span>
+            </li>
+            <li
+              *ngIf="suggestions.length === 0"
+              class="px-4 py-2 text-base text-gray-500"
+            >
+              No hay resultados
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

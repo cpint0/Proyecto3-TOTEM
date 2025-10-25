@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "nombre": "Dra. Ana Pérez",
+    "nombre": "Ana Pérez",
     "oficina": "Edificio A - Oficina 210",
     "fotoPerfil": "assets/img/general/avatar1.jpg",
     "rol": "academico",
@@ -12,7 +12,7 @@
   },
   {
     "id": 2,
-    "nombre": "Dr. Juan González",
+    "nombre": "Juan González",
     "oficina": "Edificio B - Oficina 104",
     "fotoPerfil": "assets/img/general/avatar2.jpg",
     "rol": "academico",
@@ -23,7 +23,7 @@
   },
   {
     "id": 3,
-    "nombre": "Mtra. María López",
+    "nombre": "María López",
     "oficina": "Edificio C - Oficina 305",
     "fotoPerfil": "assets/img/general/avatar3.jpg",
     "rol": "academico",
@@ -34,7 +34,7 @@
   },
   {
     "id": 4,
-    "nombre": "Dr. Carlos Ortega",
+    "nombre": "Carlos Ortega",
     "oficina": "Edificio A - Oficina 120",
     "fotoPerfil": "assets/img/general/avatar4.jpg",
     "rol": "academico",
@@ -45,7 +45,7 @@
   },
   {
     "id": 5,
-    "nombre": "Dra. Laura Ramírez",
+    "nombre": "Laura Ramírez",
     "oficina": "Edificio D - Oficina 08",
     "fotoPerfil": "assets/img/general/avatar5.jpg",
     "rol": "academico",

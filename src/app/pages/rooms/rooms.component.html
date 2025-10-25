@@ -13,19 +13,21 @@
       [(ngModel)]="selectedCategory"
       class="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
-      <option value="">Todas las categorías</option>
+      <option value="">Todas las categorias</option>
       <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
     </select>
 
     <button
       (click)="clearFilters()"
-      class="px-5 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition"
+      class="px-5 py-3 bg-[#061d3a] text-white rounded-xl hover:bg-red-600 transition"
     >
       Limpiar
     </button>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+  >
     <div
       *ngFor="let room of filteredRooms()"
       class="relative group rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-white hover:shadow-2xl transition-all duration-300"
@@ -38,19 +40,39 @@
           class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500 rounded-t-2xl"
         />
       </div>
-      <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-3 text-center">
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-3 text-center"
+      >
         <h3 class="font-semibold text-lg">{{ room.nombre }}</h3>
         <p class="text-sm opacity-80">{{ room.category }}</p>
       </div>
     </div>
   </div>
 
-  <div *ngIf="filteredRooms().length === 0" class="mt-16 text-center p-8 bg-white rounded-xl shadow-lg">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-gray-400 mx-auto mb-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.197 5.197a7.5 7.5 0 0 0 10.607 10.607Z" />
+  <div
+    *ngIf="filteredRooms().length === 0"
+    class="mt-16 text-center p-8 bg-white rounded-xl shadow-lg"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-12 h-12 text-gray-400 mx-auto mb-4"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.197 5.197a7.5 7.5 0 0 0 10.607 10.607Z"
+      />
     </svg>
-    <h3 class="text-xl font-semibold text-gray-800 mb-2">No se encontraron salas</h3>
-    <p class="text-gray-600">Intenta ajustar tu búsqueda o selecciona otra categoría.</p>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">
+      No se encontraron salas
+    </h3>
+    <p class="text-gray-600">
+      Intenta ajustar tu búsqueda o selecciona otra categoría.
+    </p>
   </div>
 
   <div
@@ -58,11 +80,10 @@
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
     (click)="closeModal()"
   >
-    <div 
+    <div
       class="bg-white rounded-2xl shadow-2xl w-full max-w-[80vw] h-[80vh] flex flex-col md:flex-row overflow-hidden animate-fadeIn relative"
       (click)="$event.stopPropagation()"
     >
-      
       <div class="md:w-1/2 h-1/3 md:h-full">
         <img
           [src]="selectedRoom.image"
@@ -71,7 +92,9 @@
         />
       </div>
 
-      <div class="md:w-1/2 p-6 flex flex-col justify-between relative overflow-y-auto">
+      <div
+        class="md:w-1/2 p-6 flex flex-col justify-between relative overflow-y-auto"
+      >
         <button
           (click)="closeModal()"
           class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 text-3xl font-bold z-10"
@@ -81,42 +104,71 @@
 
         <div class="mt-8 md:mt-0">
           <h2 class="text-4xl font-bold mb-1">{{ selectedRoom.nombre }}</h2>
-          <p class="text-sm text-gray-500 mb-4">ID: <span class="font-semibold">{{ selectedRoom.id_Sala }}</span></p>
+          <p class="text-sm text-gray-500 mb-4">
+            ID: <span class="font-semibold">{{ selectedRoom.id_Sala }}</span>
+          </p>
 
-          <span class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
+          <span
+            class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6"
+          >
             {{ selectedRoom.category }}
           </span>
 
           <dl class="space-y-3 divide-y divide-gray-200">
             <div class="pt-3 flex justify-between">
-                <dt class="text-base font-semibold text-gray-600">Ubicación</dt>
-                <dd class="text-base font-medium text-gray-800">{{ selectedRoom.ubicacion }}</dd>
+              <dt class="text-base font-semibold text-gray-600">Ubicación</dt>
+              <dd class="text-base font-medium text-gray-800">
+                {{ selectedRoom.ubicacion }}
+              </dd>
             </div>
             <div class="pt-3 flex justify-between">
-                <dt class="text-base font-semibold text-gray-600">Capacidad Máxima</dt>
-                <dd class="text-base font-medium text-blue-600">{{ selectedRoom.capacidadMax }} personas</dd>
+              <dt class="text-base font-semibold text-gray-600">
+                Capacidad Máxima
+              </dt>
+              <dd class="text-base font-medium text-blue-600">
+                {{ selectedRoom.capacidadMax }} personas
+              </dd>
             </div>
             <div class="pt-3 flex justify-between">
-                <dt class="text-base font-semibold text-gray-600">Código de Sala</dt>
-                <dd class="text-base font-medium text-gray-800">{{ selectedRoom.codigo }}</dd>
+              <dt class="text-base font-semibold text-gray-600">
+                Código de Sala
+              </dt>
+              <dd class="text-base font-medium text-gray-800">
+                {{ selectedRoom.codigo }}
+              </dd>
             </div>
             <div class="pt-3 flex justify-between items-center">
-                <dt class="text-base font-semibold text-gray-600">Mapa / Distribución</dt>
-                <dd>
-                    <a [href]="selectedRoom.url_mapa" target="_blank" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">Ver Enlace</a>
-                </dd>
+              <dt class="text-base font-semibold text-gray-600">
+                Mapa / Distribución
+              </dt>
+              <dd>
+                <a
+                  [href]="selectedRoom.url_mapa"
+                  target="_blank"
+                  class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                  >Ver Enlace</a
+                >
+              </dd>
             </div>
             <div class="pt-3 flex justify-between items-center">
-                <dt class="text-base font-semibold text-gray-600">Código QR</dt>
-                <dd>
-                    <a [href]="selectedRoom.QR" target="_blank" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">Ver QR</a>
-                </dd>
+              <dt class="text-base font-semibold text-gray-600">Código QR</dt>
+              <dd>
+                <a
+                  [href]="selectedRoom.QR"
+                  target="_blank"
+                  class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                  >Ver QR</a
+                >
+              </dd>
             </div>
           </dl>
 
-          <h3 class="text-xl font-semibold mt-6 mb-3 border-b pb-2 text-gray-700">Descripción</h3>
+          <h3
+            class="text-xl font-semibold mt-6 mb-3 border-b pb-2 text-gray-700"
+          >
+            Descripción
+          </h3>
           <p class="text-gray-700 text-sm">{{ selectedRoom.description }}</p>
-
         </div>
 
         <div class="mt-auto pt-4 text-right">

@@ -11,7 +11,7 @@ interface Room {
   url_mapa: string;
   codigo: string;
   QR: string;
-  category: string; 
+  category: string;
   image: string;
   description: string;
 }
@@ -27,7 +27,12 @@ export class RoomsComponent {
   selectedCategory: string = '';
   selectedRoom: Room | null = null;
 
-  categories: string[] = ['Laboratorio', 'Simulación', 'Virtual', 'Experimental'];
+  categories: string[] = [
+    'Laboratorio',
+    'Simulación',
+    'Virtual',
+    'Experimental',
+  ];
 
   rooms: Room[] = [
     {
@@ -40,7 +45,8 @@ export class RoomsComponent {
       codigo: 'LA-101',
       QR: 'https://example.com/qr/101', // URL ejemplo
       image: 'https://source.unsplash.com/600x600/?laboratory,science',
-      description: 'Sala dedicada a experimentos científicos y pruebas controladas. Ideal para proyectos de microbiología y física avanzada.',
+      description:
+        'Sala dedicada a experimentos científicos y pruebas controladas. Ideal para proyectos de microbiología y física avanzada.',
     },
     {
       id_Sala: 205,
@@ -52,7 +58,8 @@ export class RoomsComponent {
       codigo: 'SB-205',
       QR: 'https://example.com/qr/205',
       image: 'https://source.unsplash.com/600x600/?simulation,cockpit',
-      description: 'Sala de simulaciones de entornos urbanos y naturales, utilizada para entrenamiento de pilotos y operadores de maquinaria pesada.',
+      description:
+        'Sala de simulaciones de entornos urbanos y naturales, utilizada para entrenamiento de pilotos y operadores de maquinaria pesada.',
     },
     {
       id_Sala: 301,
@@ -64,7 +71,8 @@ export class RoomsComponent {
       codigo: 'RV-301',
       QR: 'https://example.com/qr/301',
       image: 'https://source.unsplash.com/600x600/?virtual,reality',
-      description: 'Sala equipada con VR para entrenamiento inmersivo y educativo en diseño arquitectónico y medicina.',
+      description:
+        'Sala equipada con VR para entrenamiento inmersivo y educativo en diseño arquitectónico y medicina.',
     },
     {
       id_Sala: 412,
@@ -76,7 +84,8 @@ export class RoomsComponent {
       codigo: 'ED-412',
       QR: 'https://example.com/qr/412',
       image: 'https://source.unsplash.com/600x600/?technology,lab',
-      description: 'Sala para experimentos tecnológicos avanzados y pruebas de IA con acceso a hardware especializado.',
+      description:
+        'Sala para experimentos tecnológicos avanzados y pruebas de IA con acceso a hardware especializado.',
     },
     {
       id_Sala: 503,
@@ -88,14 +97,19 @@ export class RoomsComponent {
       codigo: 'SS-503',
       QR: 'https://example.com/qr/503',
       image: 'https://source.unsplash.com/600x600/?digital,space',
-      description: 'Sala de simulación digital para prototipado rápido y visualización de datos tridimensionales.',
+      description:
+        'Sala de simulación digital para prototipado rápido y visualización de datos tridimensionales.',
     },
   ];
 
   filteredRooms(): Room[] {
-    return this.rooms.filter(room => {
-      const matchesText = room.nombre.toLowerCase().includes(this.searchText.toLowerCase());
-      const matchesCategory = this.selectedCategory ? room.category === this.selectedCategory : true;
+    return this.rooms.filter((room) => {
+      const matchesText = room.nombre
+        .toLowerCase()
+        .includes(this.searchText.toLowerCase());
+      const matchesCategory = this.selectedCategory
+        ? room.category === this.selectedCategory
+        : true;
       return matchesText && matchesCategory;
     });
   }
@@ -112,7 +126,7 @@ export class RoomsComponent {
     this.searchText = '';
     this.selectedCategory = '';
   }
-  
+
   // Host Listener para accesibilidad (cierre con Escape)
   @HostListener('document:keydown.escape', ['$event'])
   handleEscapeKey(event: KeyboardEvent) {

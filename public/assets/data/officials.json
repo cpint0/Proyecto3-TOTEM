@@ -1,7 +1,7 @@
 [
   {
     "id": 101,
-    "nombre": "Sr. Pedro Alvarez",
+    "nombre": "Pedro Alvarez",
     "oficina": "Edificio E - Oficina 12",
     "fotoPerfil": "assets/img/general/avatar6.jpg",
   "oficinaImagen": "assets/img/general/oficina6.jpg",
@@ -11,7 +11,7 @@
   },
   {
     "id": 102,
-    "nombre": "Sra. Isabel Torres",
+    "nombre": "Isabel Torres",
     "oficina": "Edificio F - Oficina 03",
     "fotoPerfil": "assets/img/general/avatar7.jpg",
   "oficinaImagen": "assets/img/general/oficina7.jpg",
@@ -21,7 +21,7 @@
   },
   {
     "id": 103,
-    "nombre": "Sr. Miguel Rojas",
+    "nombre": "Miguel Rojas",
     "oficina": "Edificio G - Oficina 21",
     "fotoPerfil": "assets/img/general/avatar8.jpg",
   "oficinaImagen": "assets/img/general/oficina8.jpg",
@@ -31,7 +31,7 @@
   },
   {
     "id": 104,
-    "nombre": "Sra. Carolina Vega",
+    "nombre": "Carolina Vega",
     "oficina": "Edificio H - Oficina 05",
     "fotoPerfil": "assets/img/general/avatar9.jpg",
   "oficinaImagen": "assets/img/general/oficina9.jpg",
@@ -41,7 +41,7 @@
   },
   {
     "id": 105,
-    "nombre": "Sr. Luis Medina",
+    "nombre": "Luis Medina",
     "oficina": "Edificio I - Oficina 18",
     "fotoPerfil": "assets/img/general/avatar10.jpg",
   "oficinaImagen": "assets/img/general/oficina10.jpg",
