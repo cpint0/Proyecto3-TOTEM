@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "nombre": "Dra. Ana Pérez",
+    "oficina": "Edificio A - Oficina 210",
+    "fotoPerfil": "assets/img/general/avatar1.jpg",
+    "rol": "academico",
+    "oficinaImagen": "assets/img/general/oficina1.jpg",
+    "horarioImagen": "assets/img/general/horario1.png",
+    "departamento": "Ciencias de la Computación",
+    "email": "ana.perez@universidad.edu"
+  },
+  {
+    "id": 2,
+    "nombre": "Dr. Juan González",
+    "oficina": "Edificio B - Oficina 104",
+    "fotoPerfil": "assets/img/general/avatar2.jpg",
+    "rol": "academico",
+    "oficinaImagen": "assets/img/general/oficina2.jpg",
+    "horarioImagen": "assets/img/general/horario2.png",
+    "departamento": "Ingeniería de Software",
+    "email": "juan.gonzalez@universidad.edu"
+  },
+  {
+    "id": 3,
+    "nombre": "Mtra. María López",
+    "oficina": "Edificio C - Oficina 305",
+    "fotoPerfil": "assets/img/general/avatar3.jpg",
+    "rol": "academico",
+    "oficinaImagen": "assets/img/general/oficina3.jpg",
+    "horarioImagen": "assets/img/general/horario3.png",
+    "departamento": "Inteligencia Artificial",
+    "email": "maria.lopez@universidad.edu"
+  },
+  {
+    "id": 4,
+    "nombre": "Dr. Carlos Ortega",
+    "oficina": "Edificio A - Oficina 120",
+    "fotoPerfil": "assets/img/general/avatar4.jpg",
+    "rol": "academico",
+    "oficinaImagen": "assets/img/general/oficina4.jpg",
+    "horarioImagen": "assets/img/general/horario4.png",
+    "departamento": "Redes y Comunicaciones",
+    "email": "carlos.ortega@universidad.edu"
+  },
+  {
+    "id": 5,
+    "nombre": "Dra. Laura Ramírez",
+    "oficina": "Edificio D - Oficina 08",
+    "fotoPerfil": "assets/img/general/avatar5.jpg",
+    "rol": "academico",
+    "oficinaImagen": "assets/img/general/oficina5.jpg",
+    "horarioImagen": "assets/img/general/horario5.png",
+    "departamento": "Ciencias de Datos",
+    "email": "laura.ramirez@universidad.edu"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": 101,
+    "nombre": "Sr. Pedro Alvarez",
+    "oficina": "Edificio E - Oficina 12",
+    "fotoPerfil": "assets/img/general/avatar6.jpg",
+  "oficinaImagen": "assets/img/general/oficina6.jpg",
+    "departamento": "Administración",
+    "email": "pedro.alvarez@universidad.edu",
+    "rol": "Funcionario"
+  },
+  {
+    "id": 102,
+    "nombre": "Sra. Isabel Torres",
+    "oficina": "Edificio F - Oficina 03",
+    "fotoPerfil": "assets/img/general/avatar7.jpg",
+  "oficinaImagen": "assets/img/general/oficina7.jpg",
+    "departamento": "Recursos Humanos",
+    "email": "isabel.torres@universidad.edu",
+    "rol": "Funcionario"
+  },
+  {
+    "id": 103,
+    "nombre": "Sr. Miguel Rojas",
+    "oficina": "Edificio G - Oficina 21",
+    "fotoPerfil": "assets/img/general/avatar8.jpg",
+  "oficinaImagen": "assets/img/general/oficina8.jpg",
+    "departamento": "Finanzas",
+    "email": "miguel.rojas@universidad.edu",
+    "rol": "Funcionario"
+  },
+  {
+    "id": 104,
+    "nombre": "Sra. Carolina Vega",
+    "oficina": "Edificio H - Oficina 05",
+    "fotoPerfil": "assets/img/general/avatar9.jpg",
+  "oficinaImagen": "assets/img/general/oficina9.jpg",
+    "departamento": "Infraestructura",
+    "email": "carolina.vega@universidad.edu",
+    "rol": "Funcionario"
+  },
+  {
+    "id": 105,
+    "nombre": "Sr. Luis Medina",
+    "oficina": "Edificio I - Oficina 18",
+    "fotoPerfil": "assets/img/general/avatar10.jpg",
+  "oficinaImagen": "assets/img/general/oficina10.jpg",
+    "departamento": "Servicios Generales",
+    "email": "luis.medina@universidad.edu",
+    "rol": "Funcionario"
+  }
+]

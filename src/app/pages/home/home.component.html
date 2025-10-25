@@ -1,8 +1,10 @@
 <div class="flex flex-col min-h-screen">
   <app-navbar></app-navbar>
 
-  <main class="px-4 pt-24 flex-grow overflow-y-auto h-0">
-    <div class="max-w-7xl mx-auto pt-0 pb-1">
+  <main 
+    class="px-4 pt-24 flex-grow overflow-y-auto h-0 bg-[url('/assets/img/fondoPantalla.png')] bg-cover bg-center bg-no-repeat"
+  >
+    <div class="max-w-7xl mx-auto pt-0 pb-1 bg-white/70 p-4 rounded-xl">
       <div class="bg-[#F8F8F8]/90 p-8 rounded-lg shadow-2xl mb-8">
         <h1 class="text-5xl font-extrabold text-[#0F3F7A] mb-6 text-center">
           Bienvenidos al Departamento de Mecánica
@@ -14,14 +16,14 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <a
-          *ngFor="let solution of solutions; index as i"
+          *ngFor="let iterator of section; index as i"
           class="block"
-          [routerLink]="solution.link"
+          [routerLink]="iterator.link"
         >
           <app-card
-            [title]="solution.title"
-            [description]="solution.description"
-            [imageUrl]="solution.imageUrl"
+            [title]="iterator.title"
+            [description]="iterator.description"
+            [imageUrl]="iterator.imageUrl"
             [cardIndex]="i"
           ></app-card>
         </a>
