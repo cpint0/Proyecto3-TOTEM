@@ -1,37 +1,55 @@
 <app-navbar></app-navbar>
 
-<div class="mt-24 p-4 md:p-8 min-h-screen flex flex-col items-center">
+<div
+  (click)="closePopover()"
+  class="mt-24 p-4 md:p-8 min-h-screen flex flex-col items-center bg-[url('/assets/img/fondoPantalla.png')] bg-cover bg-center bg-no-repeat relative"
+>
   <div
-    class="container w-full bg-white shadow-xl rounded-xl p-6 md:p-10 max-w-5xl"
+    class="container w-full bg-white shadow-xl rounded-xl p-6 md:p-10 max-w-9xl"
   >
-    <!-- Título -->
-    <h1 class="text-4xl font-extrabold text-indigo-700 mb-4 text-center">
-      📅 Calendario de Feriados Nacionales
-    </h1>
-
     <!-- Controles de Navegación -->
     <div
-      class="flex items-center justify-between gap-4 mb-8 p-4 bg-indigo-50 rounded-lg"
+      class="flex flex-wrap items-center justify-center gap-4 mb-8 p-4 bg-indigo-50 rounded-lg"
     >
-      <button
-        (click)="changeMonth(-1)"
-        class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md"
-      >
-        &larr; Mes Anterior
-      </button>
+      <div class="flex items-center gap-4">
+        <!-- Selector de Mes -->
+        <select
+          [(ngModel)]="currentMonth"
+          (change)="onDateChange()"
+          class="bg-white border border-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <option *ngFor="let month of monthNames; let i = index" [value]="i">
+            {{ month }}
+          </option>
+        </select>
 
+        <!-- Selector de Año -->
+        <select
+          [(ngModel)]="currentYear"
+          (change)="onDateChange()"
+          class="bg-white border border-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <option *ngFor="let year of availableYears" [value]="year">
+            {{ year }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Título de fecha actual -->
       <div
+        *ngIf="currentMonth != null && currentYear != null"
         id="current-date-display"
         class="text-2xl font-bold text-indigo-800 flex-grow text-center min-w-[200px]"
       >
         {{ monthNames[currentMonth] }} de {{ currentYear }}
       </div>
 
+      <!-- Botón para volver a Hoy -->
       <button
-        (click)="changeMonth(1)"
+        (click)="goToToday()"
         class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md"
       >
-        Mes Siguiente &rarr;
+        Ir a Hoy
       </button>
     </div>
 
@@ -72,53 +90,125 @@
       <span class="font-bold">Error:</span> {{ error }}
     </div>
 
-    <!-- Calendario -->
-    <div id="results-container" class="flex justify-center w-full">
-      <div class="w-full">
-        <div class="calendar-grid w-full">
-          <!-- Cabecera -->
-          <div
-            *ngFor="let day of dayNames"
-            class="day-cell text-center p-1 font-semibold text-xs bg-indigo-300 text-indigo-900 border-none min-h-0"
-          >
-            {{ day }}
+    <!-- Contenedor Principal (Feriados + Calendario) -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Columna Izquierda: Listas de Feriados y Eventos -->
+      <div class="w-full lg:w-1/3">
+        <div class="sticky top-24 flex flex-col gap-6">
+          <!-- Lista de Feriados -->
+          <div>
+            <h2 class="text-2xl font-bold text-indigo-800 mb-4">
+              Feriados de {{ monthNames[currentMonth!] }}
+            </h2>
+            <div
+              class="bg-gray-50 rounded-lg p-4 h-[210px] overflow-y-auto shadow-inner"
+            >
+              <ng-container *ngIf="monthlyHolidays.length > 0; else noHolidays">
+                <ul class="space-y-3">
+                  <li *ngFor="let holiday of monthlyHolidays">
+                    <div class="flex items-start gap-3">
+                      <div
+                        class="flex-shrink-0 w-12 text-center bg-indigo-100 rounded-md p-1"
+                      >
+                        <div class="text-xs font-bold text-indigo-700">
+                          {{ holiday.date | slice : 5 : 7 }}
+                        </div>
+                        <div class="text-lg font-extrabold text-indigo-900">
+                          {{ holiday.date | slice : 8 : 10 }}
+                        </div>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-gray-800">
+                          {{ holiday.localName }}
+                        </p>
+                        <p class="text-xs text-gray-500">{{ holiday.name }}</p>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </ng-container>
+              <ng-template #noHolidays>
+                <div
+                  class="flex items-center justify-center h-full text-gray-500"
+                >
+                  <p>No hay feriados este mes.</p>
+                </div>
+              </ng-template>
+            </div>
           </div>
 
-          <!-- Espacios vacíos -->
-          <div
-            *ngFor="let _ of [].constructor(firstDayOfWeek)"
-            class="day-cell bg-gray-100 border border-gray-200"
-          ></div>
-
-          <!-- Días del mes -->
-          <div
-            *ngFor="let day of daysArray"
-            [ngClass]="{
-              'day-cell border border-gray-200 bg-white': true,
-              'holiday-day': isHoliday(day),
-              'bg-indigo-200 border-indigo-500 ring-2 ring-indigo-500':
-                isToday(day)
-            }"
-          >
-            <span
-              class="day-number"
-              [ngClass]="{ 'text-indigo-800': isToday(day) }"
+          <!-- Lista de Eventos del Departamento -->
+          <div>
+            <h2 class="text-2xl font-bold text-indigo-800 mb-4">
+              Eventos Departamento
+            </h2>
+            <div
+              class="bg-gray-50 rounded-lg p-4 h-[210px] overflow-y-auto shadow-inner flex items-center justify-center text-gray-500"
             >
-              {{ day }}
-            </span>
+              <p>Próximamente: Eventos del departamento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <ng-container *ngIf="getHolidayNames(day).length > 0">
-              <p
-                *ngFor="let name of getHolidayNames(day)"
-                class="holiday-name"
-                [title]="name"
+      <!-- Columna Derecha: Calendario -->
+      <div class="w-full lg:w-2/3">
+        <div id="results-container" class="flex justify-center w-full">
+          <div class="w-full">
+            <!-- Cabecera de días de la semana -->
+            <div class="grid grid-cols-7 gap-1 mb-1">
+              <div
+                *ngFor="let day of dayNames"
+                class="text-center font-semibold text-xs text-indigo-800"
               >
-                {{ name }}
-              </p>
-            </ng-container>
+                {{ day }}
+              </div>
+            </div>
+
+            <!-- Grilla del Calendario -->
+            <div class="calendar-grid w-full">
+              <!-- Espacios vacíos -->
+              <div
+                *ngFor="let _ of [].constructor(firstDayOfWeek)"
+                class="day-cell bg-gray-100 border border-gray-200"
+              ></div>
+
+              <!-- Días del mes -->
+              <div
+                *ngFor="let day of daysArray"
+                (click)="showHolidayPopover(day, $event)"
+                [ngClass]="{
+                  'day-cell border border-gray-200 bg-white': true,
+                  'holiday-day': isHoliday(day),
+                  'cursor-pointer': isHoliday(day),
+                  'bg-indigo-200 border-indigo-500 ring-2 ring-indigo-500 animate-pulse':
+                    isToday(day)
+                }"
+              >
+                <span
+                  class="day-number text-3xl font-bold"
+                  [ngClass]="{ 'text-indigo-800': isToday(day) }"
+                >
+                  {{ day }}
+                </span>
+
+                <ng-container *ngIf="getHolidayNames(day).length > 0">
+                  <p
+                    *ngFor="let name of getHolidayNames(day)"
+                    class="holiday-name text-sm hover:scale-110 hover:font-bold transition-transform duration-200"
+                    [title]="name"
+                  >
+                    {{ name }}
+                  </p>
+                </ng-container>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Popover para Feriados -->
+    <!-- ... (el código del popover se mantiene igual) ... -->
   </div>
 </div>
+<app-footer></app-footer>

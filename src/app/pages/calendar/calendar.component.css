@@ -15,7 +15,7 @@ body {
 
 .day-cell {
   padding: 4px;
-  min-height: 80px;
+  min-height: 100px;
   background-color: white;
   position: relative;
   text-align: left;

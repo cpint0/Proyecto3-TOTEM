@@ -1,51 +1,59 @@
 /* Modal styles for academic component */
 .modal-backdrop {
-	background: rgba(0, 0, 0, 0.65);
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
+/* Sutil animación al pasar el mouse por las tarjetas */
+div[ngfor] div:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}
 .modal-wrapper {
-	width: min(1100px, 95vw);
-	max-width: 95vw;
-	max-height: 90vh;
-	border-radius: 0.75rem;
-	overflow: hidden;
-	position: relative;
+  width: min(1100px, 95vw);
+  max-width: 95vw;
+  max-height: 90vh;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  position: relative;
 }
 
 .modal-body {
-	background: #000;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 1rem;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
 .modal-image-container {
-	width: 100%;
-	height: 80vh; /* fixed visual area for the image */
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  width: 100%;
+  height: 80vh; /* fixed visual area for the image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-image {
-	max-height: 100%;
-	max-width: 100%;
-	object-fit: contain;
-	display: block;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .modal-close {
-	border: none;
-	cursor: pointer;
-	padding: 0.35rem 0.5rem;
-	font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  font-size: 1rem;
 }
 
 .card-back-button a {
-	text-decoration: none;
+  text-decoration: none;
 }
 
+.academic-card:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}

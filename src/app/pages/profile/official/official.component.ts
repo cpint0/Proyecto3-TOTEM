@@ -5,19 +5,28 @@ import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { Academic } from '../academic/academic.model';
+import { Official } from '../../../models/official.model';
 
 @Component({
   selector: 'app-official',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent, HttpClientModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    NavbarComponent,
+    FooterComponent,
+    HttpClientModule,
+    FormsModule,
+  ],
   templateUrl: './official.component.html',
-  styleUrls: ['./official.component.css']
+  styleUrls: ['./official.component.css'],
 })
 export class OfficialComponent implements OnInit {
   searchText = '';
-  officials: Academic[] = [];
-  selectedOfficial?: Academic;
+  searchCargo = '';
+  officials: Official[] = [];
+  cargos: string[] = [];
+  selectedOfficial?: Official;
   loading = true;
   error?: string;
   modalOpen = false;
@@ -37,9 +46,15 @@ export class OfficialComponent implements OnInit {
 
   loadOfficials() {
     this.loading = true;
-    this.http.get<Academic[]>('assets/data/officials.json').subscribe(
+    this.http.get<Official[]>('assets/data/officials.json').subscribe(
       (data) => {
-        this.officials = data.filter((a) => a.rol && a.rol.toLowerCase().includes('funcionario'));
+        this.officials = data.filter(
+          (a) => a.rol && a.rol.toLowerCase().includes('funcionario')
+        );
+        // Extraer cargos únicos y ordenarlos
+        const allCargos = this.officials.map((o) => o.cargo).filter(Boolean);
+        this.cargos = [...new Set(allCargos)].sort();
+
         this.loading = false;
       },
       (err) => {
@@ -52,9 +67,12 @@ export class OfficialComponent implements OnInit {
 
   loadSingleOfficial(id: number) {
     this.loading = true;
-    this.http.get<Academic[]>('assets/data/officials.json').subscribe(
+    this.http.get<Official[]>('assets/data/officials.json').subscribe(
       (data) => {
-        this.selectedOfficial = data.find((a) => a.id === id && a.rol && a.rol.toLowerCase().includes('funcionario'));
+        this.selectedOfficial = data.find(
+          (a) =>
+            a.id === id && a.rol && a.rol.toLowerCase().includes('funcionario')
+        );
         if (!this.selectedOfficial) this.error = 'Funcionario no encontrado';
         this.loading = false;
       },
@@ -66,14 +84,25 @@ export class OfficialComponent implements OnInit {
     );
   }
 
-  filteredOfficials(): Academic[] {
+  selectOfficial(o: Official) {
+    this.selectedOfficial = o;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  filteredOfficials(): Official[] {
     return this.officials.filter(
-      (a) => this.searchText === '' || a.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+      (official) =>
+        (this.searchText === '' ||
+          official.nombre
+            .toLowerCase()
+            .includes(this.searchText.toLowerCase())) &&
+        (this.searchCargo === '' || official.cargo === this.searchCargo)
     );
   }
 
   clearFilters() {
     this.searchText = '';
+    this.searchCargo = '';
   }
 
   openImageModal(src?: string) {

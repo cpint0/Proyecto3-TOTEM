@@ -5,18 +5,27 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from '../../../components/navbar/navbar.component';
 import { FooterComponent } from '../../../components/footer/footer.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Academic } from './academic.model';
+import { Academic } from '../../../models/academic.model';
 
 @Component({
   selector: 'app-academic',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent, HttpClientModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NavbarComponent,
+    FooterComponent,
+    HttpClientModule,
+  ],
   templateUrl: './academic.component.html',
   styleUrls: ['./academic.component.css'],
 })
 export class AcademicComponent implements OnInit {
   searchText: string = '';
+  searchEspecialidad: string = '';
   academics: Academic[] = [];
+  especialidades: string[] = [];
   selectedAcademic?: Academic;
   loading = true;
   error?: string;
@@ -41,6 +50,10 @@ export class AcademicComponent implements OnInit {
     this.http.get<Academic[]>('assets/data/academics.json').subscribe(
       (data) => {
         this.academics = data.filter((a) => a.rol === 'academico');
+        const allEspecialidades = this.academics
+          .map((a) => (a as any).especialidad) // Usamos 'any' por si el modelo no está actualizado
+          .filter(Boolean);
+        this.especialidades = [...new Set(allEspecialidades)].sort();
         this.loading = false;
       },
       (err) => {
@@ -55,7 +68,9 @@ export class AcademicComponent implements OnInit {
     this.loading = true;
     this.http.get<Academic[]>('assets/data/academics.json').subscribe(
       (data) => {
-        this.selectedAcademic = data.find((a) => a.id === id && a.rol === 'academico');
+        this.selectedAcademic = data.find(
+          (a) => a.id === id && a.rol === 'academico'
+        );
         if (!this.selectedAcademic) {
           this.error = 'Académico no encontrado';
         }
@@ -69,14 +84,24 @@ export class AcademicComponent implements OnInit {
     );
   }
 
+  selectAcademic(a: Academic) {
+    this.selectedAcademic = a;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   filteredAcademics(): Academic[] {
+    const text = this.searchText.trim().toLowerCase();
+    const espec = this.searchEspecialidad.trim().toLowerCase();
     return this.academics.filter(
-      (a) => this.searchText === '' || a.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+      (a) =>
+        (!text || a.nombre.toLowerCase().includes(text)) &&
+        (!espec || ((a as any).especialidad || '').toLowerCase() === espec)
     );
   }
 
   clearFilters() {
     this.searchText = '';
+    this.searchEspecialidad = '';
   }
 
   openImageModal(src?: string) {

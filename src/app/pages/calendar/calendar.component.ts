@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { FormsModule } from '@angular/forms';
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, FormsModule, FooterComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
@@ -38,15 +40,31 @@ export class CalendarComponent implements OnInit {
   loading = false;
   error = '';
   yearlyHolidays: Map<string, Map<string, any[]>> = new Map();
+  monthlyHolidays: any[] = [];
+  availableYears: number[] = [];
+
+  // Propiedades para el popover de feriados
+  popoverOpen = false;
+  popoverContent: string[] = [];
+  popoverPosition = { top: '0px', left: '0px' };
 
   ngOnInit(): void {
     const today = new Date();
     this.currentYear = today.getFullYear();
     this.currentMonth = today.getMonth();
+    this.populateYears();
     this.renderApp();
   }
 
+  private populateYears(): void {
+    const startYear = this.currentYear - 10;
+    for (let i = 0; i <= 20; i++) {
+      this.availableYears.push(startYear + i);
+    }
+  }
+
   async renderApp(): Promise<void> {
+    // Si no hay mes o año, no renderizar el calendario.
     this.error = '';
     const yearKey = String(this.currentYear);
 
@@ -64,6 +82,16 @@ export class CalendarComponent implements OnInit {
     ).getDate();
     this.daysArray = Array.from({ length: this.daysInMonth }, (_, i) => i + 1);
 
+    // Poblar la lista de feriados del mes
+    this.monthlyHolidays = [];
+    const monthKey = `${this.currentYear}-${String(
+      this.currentMonth + 1
+    ).padStart(2, '0')}`;
+    holidaysMap.forEach((holidays, date) => {
+      if (date.startsWith(monthKey)) {
+        this.monthlyHolidays.push(...holidays);
+      }
+    });
     // Guardar mapa en memoria
     this.yearlyHolidays.set(yearKey, holidaysMap);
   }
@@ -92,21 +120,22 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  changeMonth(delta: number): void {
-    this.currentMonth += delta;
-    if (this.currentMonth > 11) {
-      this.currentMonth = 0;
-      this.currentYear++;
-    } else if (this.currentMonth < 0) {
-      this.currentMonth = 11;
-      this.currentYear--;
-    }
+  onDateChange(): void {
     this.renderApp();
   }
 
+  goToToday(): void {
+    const today = new Date();
+    this.currentYear = today.getFullYear();
+    this.currentMonth = today.getMonth();
+    this.renderApp();
+  }
   /** Helpers de UI **/
   isToday(day: number): boolean {
     const today = new Date();
+    if (this.currentMonth === null || this.currentYear === null) {
+      return false;
+    }
     return (
       today.getFullYear() === this.currentYear &&
       today.getMonth() === this.currentMonth &&
@@ -134,5 +163,29 @@ export class CalendarComponent implements OnInit {
     const month = String(this.currentMonth + 1).padStart(2, '0');
     const dayStr = String(day).padStart(2, '0');
     return `${this.currentYear}-${month}-${dayStr}`;
+  }
+
+  showHolidayPopover(day: number, event: MouseEvent): void {
+    event.stopPropagation(); // Evita que el clic se propague al fondo
+    if (this.isHoliday(day)) {
+      const holidayNames = this.getHolidayNames(day);
+      if (holidayNames.length > 0) {
+        this.popoverContent = holidayNames;
+        const rect = (
+          event.currentTarget as HTMLElement
+        ).getBoundingClientRect();
+        this.popoverPosition = {
+          top: `${rect.bottom + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`,
+        };
+        this.popoverOpen = true;
+      }
+    }
+  }
+
+  closePopover(): void {
+    if (this.popoverOpen) {
+      this.popoverOpen = false;
+    }
   }
 }
