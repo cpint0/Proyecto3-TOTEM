@@ -6,7 +6,7 @@ import { Actividad } from './entities/actividade.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Actividad]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Actividad]) 
   ],
   controllers: [ActividadesController],
   providers: [ActividadesService],

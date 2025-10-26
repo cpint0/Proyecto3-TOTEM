@@ -6,7 +6,7 @@ import { Cargo } from './entities/cargo.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cargo]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Cargo]) 
   ],
   controllers: [CargosController],
   providers: [CargosService],

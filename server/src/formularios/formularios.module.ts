@@ -6,7 +6,7 @@ import { Formulario } from './entities/formulario.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Formulario]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Formulario]) 
   ],
   controllers: [FormulariosController],
   providers: [FormulariosService],

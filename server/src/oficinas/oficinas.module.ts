@@ -6,7 +6,7 @@ import { Oficina } from './entities/oficina.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Oficina]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Oficina]) 
   ],
   controllers: [OficinasController],
   providers: [OficinasService],

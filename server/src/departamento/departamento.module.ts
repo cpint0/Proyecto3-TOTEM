@@ -6,7 +6,7 @@ import { Departamento } from './entities/departamento.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Departamento]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Departamento]) 
   ],
   controllers: [DepartamentoController],
   providers: [DepartamentoService],

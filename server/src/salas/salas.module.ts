@@ -6,7 +6,7 @@ import { Sala } from './entities/sala.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Sala]) // <-- 3. Registra la entidad aquí
+    TypeOrmModule.forFeature([Sala]) // 
   ],
   controllers: [SalasController],
   providers: [SalasService],
