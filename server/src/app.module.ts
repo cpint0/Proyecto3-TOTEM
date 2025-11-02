@@ -11,6 +11,16 @@ import { OficinasModule } from './oficinas/oficinas.module';
 import { CargosModule } from './cargos/cargos.module';
 import { EmpleadoCargosModule } from './empleado-cargos/empleado-cargos.module';
 
+import { Sala } from './salas/entities/sala.entity';
+import { Departamento } from './departamento/entities/departamento.entity';
+import { Usuario } from './usuarios/entities/usuario.entity';
+import { Formulario } from './formularios/entities/formulario.entity';
+import { Actividad } from './actividades/entities/actividade.entity';
+import { Oficina } from './oficinas/entities/oficina.entity';
+import { Cargo } from './cargos/entities/cargo.entity';
+import { EmpleadoCargo } from './empleado-cargos/entities/empleado-cargo.entity';
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [SalasModule,DepartamentoModule, UsuariosModule,
     TypeOrmModule.forRoot({
@@ -20,14 +30,26 @@ import { EmpleadoCargosModule } from './empleado-cargos/empleado-cargos.module';
     username: 'user_proy3',
     password: 'root',
     database: 'db_crud',
-    autoLoadEntities: true,
-    synchronize: true
+    entities: [
+        Usuario,
+        Sala,
+        Departamento,
+        Formulario,
+        Actividad,
+        Oficina,
+        Cargo,
+        EmpleadoCargo,
+      ],
+
+    synchronize: false,
+    migrations: [__dirname + '/../database/migrations/*{.ts,.js}']
   }),
     FormulariosModule,
     ActividadesModule,
     OficinasModule,
     CargosModule,
-    EmpleadoCargosModule],
+    EmpleadoCargosModule,
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

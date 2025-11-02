@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateActividadeDto } from './dto/create-actividade.dto';
+import { CreateActividadDto } from './dto/create-actividade.dto';
 import { UpdateActividadeDto } from './dto/update-actividade.dto';
 
 @Injectable()
 export class ActividadesService {
-  create(createActividadeDto: CreateActividadeDto) {
+  create(createActividadeDto: CreateActividadDto) {
     return 'This action adds a new actividade';
   }
 

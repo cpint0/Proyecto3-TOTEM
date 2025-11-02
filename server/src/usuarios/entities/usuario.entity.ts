@@ -21,13 +21,10 @@ export class Usuario {
   @Column()
   apellidos: string;
 
-  @Column()
-  nombreCompleto: string;
-
   @Column({ unique: true })
   correo: string;
 
-  @Column({ select: false }) // Oculta la contraseña en las consultas
+  @Column({ select: false }) 
   contrasena: string;
 
   @Column({ default: true })
